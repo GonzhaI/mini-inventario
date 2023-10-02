@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Miniinventario"
         tools:targetApi="31">
         <activity
+
+            
+
             android:name=".ActivityIngresoCliente"
             android:exported="false" />
         <activity
@@ -22,7 +25,13 @@
             android:name=".inventario"
             android:exported="false" />
         <activity
-            android:name=".ActivityPaginaPrincipal"
+
+            android:name=".Pag_Principal"
+
+
+
+            
+
             android:exported="false" />
         <activity
             android:name=".ActivityRegistrarse"
