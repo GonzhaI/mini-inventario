@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 
 
 public class ActivityRegistrarse extends AppCompatActivity {
-    //hola
+    //Tienes que inicializar la base de datos en este MAIN
     EditText usuarioEditText, nombre_negocioNameEditText, correoEditText, contrasenaEditText, rep_contrasenaEditText;
     Button bt_ingresarButton;
 
@@ -18,6 +18,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrarse);
+
 
 
         // Inicializa las variables dentro del método onCreate
@@ -74,6 +75,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
     }
 
