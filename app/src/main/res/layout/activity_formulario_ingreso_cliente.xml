@@ -22,6 +22,7 @@
         android:layout_height="65dp"
         android:hint="Nombre del Cliente"
         android:inputType="text"
+        android:background="@drawable/edit_text_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
@@ -47,6 +48,7 @@
         android:layout_height="65dp"
         android:hint="Días Restantes para Pagar"
         android:inputType="number"
+        android:background="@drawable/edit_text_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -58,13 +60,15 @@
         android:id="@+id/editTextDescuento"
         android:layout_width="280dp"
         android:layout_height="65dp"
+        android:background="@drawable/edit_text_edit"
         android:hint="Descuento (%)"
         android:inputType="numberDecimal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.642" />
+        app:layout_constraintVertical_bias="0.671" />
 
     <Button
         android:id="@+id/btnGuardar"
@@ -75,6 +79,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintVertical_bias="0.8"
+        android:backgroundTint="#eb5e28" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="352dp"
+        android:layout_height="70dp"
+        android:fontFamily="@font/ibm_plex_serif_thin"
+        android:text="Agregar Cliente Frecuente"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.079" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
