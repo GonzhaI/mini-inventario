@@ -16,7 +16,5 @@ public class ActivityRegistrarse extends AppCompatActivity {
         setContentView(R.layout.activity_registrarse);
 
 
-
-
     }
 }

@@ -1,7 +1,11 @@
 package com.adminminiinventario;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,12 +30,18 @@ public class Pag_Principal extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private List<Productos> productosList = new ArrayList<>();
-
+    private ImageButton calendario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pag_principal);
+        calendario = findViewById(R.id.calendario);
 
+        calendario.setOnClickListener(view -> {
+            // Crea un Intent para abrir PaginaPrincipal
+            Intent intent = new Intent(Pag_Principal.this, ActivityCalendario.class);
+            startActivity(intent);
+        });
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.search);
 

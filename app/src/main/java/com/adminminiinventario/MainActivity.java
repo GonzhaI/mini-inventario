@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
 
         bt_ingresar=(Button)findViewById(R.id.bt_registrarse);
-        bt_prueba=(Button)findViewById(R.id.bt_prueba);
+
 
         bt_ingresar.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -33,13 +33,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        bt_prueba.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ActivityCalendario.class);
-                startActivity(i);
-            }
-        });
 
 
 
