@@ -37,32 +37,30 @@ public class Pag_Principal extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private List<Productos> productosList = new ArrayList<>();
-    private ImageButton calendario;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pag_principal);
-
-        calendario = findViewById(R.id.calendario);
-
+        ImageButton calendario = findViewById(R.id.calendario);
+        calendario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir pagina Calendario
+                Intent intent = new Intent(Pag_Principal.this, ActivityCalendario.class);
+                startActivity(intent);
+            }
+        });
         ImageButton bt_cliente = findViewById(R.id.clientes);
-
         bt_cliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Crea un Intent para abrir PaginaPrincipal
+                // Crea un Intent para abrir Pagina Cliente
                 Intent intent = new Intent(Pag_Principal.this, ActivityIngresoCliente.class);
                 startActivity(intent);
             }
         });
-        
 
-
-        calendario.setOnClickListener(view -> {
-            // Crea un Intent para abrir PaginaPrincipal
-            Intent intent = new Intent(Pag_Principal.this, ActivityCalendario.class);
-            startActivity(intent);
-        });
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.search);
 
