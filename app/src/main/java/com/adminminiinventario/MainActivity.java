@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -18,6 +19,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Inicializar la base de datos
+        FirebaseApp.initializeApp(this);
+
+        bt_ingresar=(Button)findViewById(R.id.bt_registrarse);
+
 
         // Inicializa Firestore
         db = FirebaseFirestore.getInstance();

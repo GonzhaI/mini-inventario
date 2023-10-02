@@ -19,6 +19,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrarse);
 
+
         // Inicializa las variables dentro del método onCreate
         usuarioEditText = findViewById(R.id.inp_usuario);
         nombre_negocioNameEditText = findViewById(R.id.inp_nombre_negocio);
@@ -97,6 +98,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+
     }
 
 }

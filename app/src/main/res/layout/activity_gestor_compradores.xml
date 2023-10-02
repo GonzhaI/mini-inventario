@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityGestorCompradores">
+
+    <!-- Fondo de colores -->
+    <View
+        android:id="@+id/view4"
+        android:layout_width="420dp"
+        android:layout_height="575dp"
+        android:background="@drawable/redondeo_pantprin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <!-- Titulo de la interfaz -->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/ibm_plex_serif_thin"
+        android:text="Gestión de Compradores"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/view4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Boton para agregar cliente frecuente -->
+    <Button
+        android:id="@+id/btnAgregarCliente"
+        android:layout_width="226dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="44dp"
+        android:text="Agregar Cliente Frecuente"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayoutClientes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/view4"
+        app:layout_constraintVertical_bias="0.0"
+        android:backgroundTint="#eb5e28" />
+
+    <!-- Tabla de clientes frecuentes -->
+    <TableLayout
+        android:id="@+id/tableLayoutClientes"
+        android:layout_width="357dp"
+        android:layout_height="375dp"
+        android:stretchColumns="0,1,2,3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.844">
+
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
