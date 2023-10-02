@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.FirebaseApp;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +17,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Inicializar la base de datos
+        FirebaseApp.initializeApp(this);
+
         bt_ingresar=(Button)findViewById(R.id.bt_registrarse);
 
         bt_ingresar.setOnClickListener(new View.OnClickListener(){
