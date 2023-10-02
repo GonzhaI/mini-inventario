@@ -20,8 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inicializar la base de datos
-        FirebaseApp.initializeApp(this);
+
 
         bt_ingresar=(Button)findViewById(R.id.bt_registrarse);
 
@@ -32,17 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         bt_ingresar = findViewById(R.id.bt_registrarse);
 
-        bt_ingresar.setOnClickListener(new View.OnClickListener() {
 
-
-        bt_ingresar.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ActivityRegistrarse.class);
-                startActivity(i);
-            }
-        });
 
 
 
