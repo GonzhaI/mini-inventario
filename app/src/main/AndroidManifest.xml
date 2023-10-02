@@ -17,7 +17,7 @@
             android:exported="false" />
         <activity
             android:name=".Pag_Principal"
-            android:name=".ActivityPaginaPrincipal"
+
             android:exported="false" />
         <activity
             android:name=".ActivityRegistrarse"
