@@ -13,7 +13,21 @@
         android:theme="@style/Theme.Miniinventario"
         tools:targetApi="31">
         <activity
-            android:name=".ActivityCalendario"
+
+            
+
+            android:name=".ActivityIngresoCliente"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityGestorCompradores"
+            android:exported="false" />
+        <activity
+            android:name=".inventario"
+            android:exported="false" />
+        <activity
+            android:name=".Pag_Principal"
+
+
             android:exported="false" />
         <activity
             android:name=".ActivityRegistrarse"
@@ -30,6 +44,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

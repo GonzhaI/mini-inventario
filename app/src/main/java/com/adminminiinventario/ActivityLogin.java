@@ -14,6 +14,16 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Button bt_ingresar = findViewById(R.id.bt_ingresar);
+
+        bt_ingresar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir PaginaPrincipal
+                Intent intent = new Intent(ActivityLogin.this, Pag_Principal.class);
+                startActivity(intent);
+            }
+        });
 
     }
 }

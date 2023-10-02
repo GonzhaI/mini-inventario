@@ -13,20 +13,22 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
-        android:fontFamily="sans-serif"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/ibm_plex_serif_thin"
         android:text="Registrarse"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/black"
-        android:textSize="34sp"
+        android:textSize="35dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view"
         android:layout_width="420dp"
-        android:layout_height="525dp"
+        android:layout_height="570dp"
         android:background="@drawable/redondeo_pantprin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +46,7 @@
         android:background="@drawable/edit_text_edit"
         android:ems="10"
         android:hint="  Nombre de Usuario"
+        android:textColor="@color/black"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/inp_nombre_negocio"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,6 +62,7 @@
         android:layout_marginBottom="28dp"
         android:background="@drawable/edit_text_edit"
         android:hint="  Nombre de Negocio"
+        android:textColor="@color/black"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/inp_correo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,6 +78,7 @@
         android:layout_marginBottom="28dp"
         android:background="@drawable/edit_text_edit"
         android:hint="  Correo electronico"
+        android:textColor="@color/black"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/inp_contraseña"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +94,7 @@
         android:layout_marginBottom="28dp"
         android:background="@drawable/edit_text_edit"
         android:hint="  Contraseña"
+        android:textColor="@color/black"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/inp_rep_contraseña"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,6 +110,7 @@
         android:background="@drawable/edit_text_edit"
         android:ems="10"
         android:hint="  Repita Contraseña"
+        android:textColor="@color/black"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/bt_ingresar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +125,8 @@
         android:layout_marginEnd="95dp"
         android:layout_marginBottom="104dp"
         android:text="Ingresar"
+        android:textColor="@color/white"
+        android:backgroundTint="#EB5E28"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -141,8 +150,9 @@
 
     <ImageButton
         android:id="@+id/imageButton2"
-        android:layout_width="78dp"
-        android:layout_height="78dp"
+        android:layout_width="60dp"
+        android:layout_height="57dp"
+        android:background="@drawable/google"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -152,8 +162,66 @@
         app:layout_constraintVertical_bias="0.564"
         app:srcCompat="@drawable/google" />
 
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Ingresa tu nombre de usuario."
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/inp_usuario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.276"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingresa tu nombre de negocio"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/inp_nombre_negocio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.281"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingresa tu correo electronico"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/inp_correo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.28"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingresa tu contraseña"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/inp_contraseña"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.225"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingresa nuevamente tu contraseña"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/inp_rep_contraseña"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.337"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
