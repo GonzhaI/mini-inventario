@@ -13,6 +13,10 @@
         android:theme="@style/Theme.Miniinventario"
         tools:targetApi="31">
         <activity
+            android:name=".inventario"
+            android:exported="false" />
+        <activity
+            android:name=".Pag_Principal"
             android:name=".ActivityPaginaPrincipal"
             android:exported="false" />
         <activity
