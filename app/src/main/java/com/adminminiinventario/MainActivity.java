@@ -29,7 +29,18 @@ public class MainActivity extends AppCompatActivity {
         // Inicializa Firestore
         db = FirebaseFirestore.getInstance();
 
-        bt_ingresar = findViewById(R.id.bt_registrarse);
+        
+
+
+
+        bt_ingresar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir PaginaPrincipal
+                Intent intent = new Intent(MainActivity.this, ActivityRegistrarse.class);
+                startActivity(intent);
+            }
+        });
 
 
 
