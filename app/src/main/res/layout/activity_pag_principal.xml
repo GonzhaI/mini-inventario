@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".Pag_Principal">
 
+    <ImageButton
+        android:id="@+id/imageButton11"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/campana"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="@+id/imageView6"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView6"
+        app:layout_constraintTop_toTopOf="@+id/imageView6"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/campana" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="62dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/image7"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/botones_secundarios" />
+
     <ImageView
         android:id="@+id/image2"
         android:layout_width="145dp"
@@ -336,5 +364,15 @@
         app:layout_constraintTop_toTopOf="@+id/image6"
         app:layout_constraintVertical_bias="0.35"
         app:srcCompat="@drawable/mas" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:srcCompat="@drawable/button_diseno" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
