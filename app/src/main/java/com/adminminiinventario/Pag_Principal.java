@@ -2,21 +2,13 @@ package com.adminminiinventario;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
-public class ActivityRegistrarse extends AppCompatActivity {
+public class Pag_Principal extends AppCompatActivity {
 
-    Button ir_login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrarse);
-
-
-
-
+        setContentView(R.layout.activity_pag_principal);
     }
 }

@@ -17,7 +17,14 @@
             android:exported="false" />
         <activity
             android:name=".ActivityGestorCompradores"
-            android:exported="true" />
+            android:exported="false" />
+        <activity
+            android:name=".inventario"
+            android:exported="false" />
+        <activity
+            android:name=".Pag_Principal"
+            android:name=".ActivityPaginaPrincipal"
+            android:exported="false" />
         <activity
             android:name=".ActivityRegistrarse"
             android:exported="false" />
@@ -33,6 +40,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
