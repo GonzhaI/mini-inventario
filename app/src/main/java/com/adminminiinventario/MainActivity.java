@@ -20,37 +20,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inicializar la base de datos
-        FirebaseApp.initializeApp(this);
+
 
         bt_ingresar=(Button)findViewById(R.id.bt_registrarse);
-        bt_prueba=(Button)findViewById(R.id.bt_prueba);
+
 
 
         // Inicializa Firestore
         db = FirebaseFirestore.getInstance();
 
-        bt_ingresar = findViewById(R.id.bt_registrarse);
+        
+
+
 
         bt_ingresar.setOnClickListener(new View.OnClickListener() {
-
-
-        bt_ingresar.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ActivityRegistrarse.class);
-                startActivity(i);
+                // Crea un Intent para abrir PaginaPrincipal
+                Intent intent = new Intent(MainActivity.this, ActivityRegistrarse.class);
+                startActivity(intent);
             }
         });
 
-        bt_prueba.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ActivityCalendario.class);
-                startActivity(i);
-            }
-        });
 
 
 
