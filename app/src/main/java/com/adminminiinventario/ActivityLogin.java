@@ -19,8 +19,8 @@ public class ActivityLogin extends AppCompatActivity {
         bt_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Crea un Intent para abrir ActivityPaginaPrincipal
-                Intent intent = new Intent(ActivityLogin.this, ActivityPaginaPrincipal.class);
+                // Crea un Intent para abrir PaginaPrincipal
+                Intent intent = new Intent(ActivityLogin.this, Pag_Principal.class);
                 startActivity(intent);
             }
         });
