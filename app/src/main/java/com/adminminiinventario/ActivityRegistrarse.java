@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 
 
 public class ActivityRegistrarse extends AppCompatActivity {
-
+    //hola
     EditText usuarioEditText, nombre_negocioNameEditText, correoEditText, contrasenaEditText, rep_contrasenaEditText;
     Button bt_ingresarButton;
 
