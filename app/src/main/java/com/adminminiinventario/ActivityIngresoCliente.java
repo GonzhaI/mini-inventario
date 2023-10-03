@@ -66,6 +66,12 @@ public class ActivityIngresoCliente extends AppCompatActivity {
                 data.putExtra("descuento", descuento);
 
                 setResult(RESULT_OK, data);
+
+                // Crear un Intent para redirigir a ActivityGestorCompradores
+                Intent intent = new Intent(ActivityIngresoCliente.this, ActivityGestorCompradores.class);
+
+                // Iniciar la actividad
+                startActivity(intent);
                 finish();
             }
         });
