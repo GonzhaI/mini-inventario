@@ -320,8 +320,8 @@
         app:srcCompat="@drawable/mas" />
 
 
-    <ImageView
-        android:id="@+id/imageView7"
+    <ImageButton
+        android:id="@+id/btn_clinetes"
         android:layout_width="42dp"
         android:layout_height="42dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
