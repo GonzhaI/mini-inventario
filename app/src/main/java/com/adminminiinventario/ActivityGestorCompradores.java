@@ -111,15 +111,17 @@ public class ActivityGestorCompradores extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_INGRESO_CLIENTE && resultCode == RESULT_OK && data != null) {
-            // Obtener los datos del formulario de ingreso del cliente
-            String nombre = data.getStringExtra("nombre");
-            boolean esDeudor = data.getBooleanExtra("esDeudor", false);
-            int diasRestantes = data.getIntExtra("diasRestantes", 0);
-            int descuento = data.getIntExtra("descuento", 0);
+        if (requestCode == REQUEST_CODE_INGRESO_CLIENTE) {
+            if (resultCode == RESULT_OK && data != null) {
+                // Obtener los datos del formulario de ingreso del cliente
+                String nombre = data.getStringExtra("nombre");
+                boolean esDeudor = data.getBooleanExtra("esDeudor", false);
+                int diasRestantes = data.getIntExtra("diasRestantes", 0);
+                int descuento = data.getIntExtra("descuento", 0);
 
-            // Agregar los datos a la tabla
-            agregarClienteALaTabla(nombre, esDeudor, diasRestantes, descuento);
+                // Agregar los datos a la tabla
+                agregarClienteALaTabla(nombre, esDeudor, diasRestantes, descuento);
+            }
         }
     }
 
