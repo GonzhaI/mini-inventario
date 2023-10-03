@@ -51,12 +51,22 @@ public class Pag_Principal extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        ImageButton bt_cliente = findViewById(R.id.btn_clinetes);
+        ImageButton bt_cliente = findViewById(R.id.btn_clinetes);   
         bt_cliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Crea un Intent para abrir Pagina Cliente
                 Intent intent = new Intent(Pag_Principal.this, ActivityIngresoCliente.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton bt_inventario = findViewById(R.id.imageButton_Inventario);
+        bt_inventario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, inventario.class);
                 startActivity(intent);
             }
         });
@@ -116,5 +126,5 @@ public class Pag_Principal extends AppCompatActivity {
                         // Maneja errores de Firestore aquí si es necesario
                     }
                 });
+        }
     }
-}

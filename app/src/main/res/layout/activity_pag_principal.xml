@@ -4,44 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F2F4F3"
     tools:context=".Pag_Principal">
-
-
-    <ImageButton
-        android:id="@+id/imageButton11"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/campana"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-        app:layout_constraintEnd_toEndOf="@+id/imageView6"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView6"
-        app:layout_constraintTop_toTopOf="@+id/imageView6"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/campana" />
-
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="62dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-        app:layout_constraintHorizontal_bias="0.583"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/botones_secundarios" />
-
 
     <ImageView
         android:id="@+id/image2"
         android:layout_width="145dp"
         android:layout_height="150dp"
-        android:layout_marginStart="228dp"
         android:layout_marginTop="248dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.849"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/botones_principales"
@@ -51,8 +23,11 @@
         android:id="@+id/image1"
         android:layout_width="145dp"
         android:layout_height="150dp"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="248dp"
+        android:layout_marginEnd="36dp"
+        app:layout_constraintEnd_toStartOf="@+id/image2"
+        app:layout_constraintHorizontal_bias="0.933"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/botones_principales" />
@@ -73,17 +48,59 @@
         android:id="@+id/imageView6"
         android:layout_width="62dp"
         android:layout_height="55dp"
-        android:layout_marginStart="232dp"
         android:layout_marginTop="36dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.792"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/botones_secundarios" />
 
     <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="62dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/botones_secundarios" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/campana"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="@+id/imageView6"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="@+id/imageView6"
+        app:layout_constraintTop_toTopOf="@+id/imageView6"
+        app:layout_constraintVertical_bias="0.6"
+        app:srcCompat="@drawable/campana" />
+
+    <ImageButton
+        android:id="@+id/btn_clinetes"
+        android:layout_width="56dp"
+        android:layout_height="52dp"
+        android:background="@drawable/agregar_usuario"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintVertical_bias="0.6"
+        app:srcCompat="@drawable/agregar_usuario" />
+
+    <ImageView
         android:id="@+id/image3"
         android:layout_width="145dp"
         android:layout_height="150dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image2"
@@ -93,7 +110,8 @@
         android:id="@+id/image4"
         android:layout_width="145dp"
         android:layout_height="150dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toStartOf="@+id/image3"
         app:layout_constraintHorizontal_bias="0.936"
@@ -105,6 +123,7 @@
         android:id="@+id/image5"
         android:layout_width="145dp"
         android:layout_height="150dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toStartOf="@+id/image6"
@@ -216,18 +235,6 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/campana"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-        app:layout_constraintEnd_toEndOf="@+id/imageView6"
-        app:layout_constraintStart_toStartOf="@+id/imageView6"
-        app:layout_constraintTop_toTopOf="@+id/imageView6"
-        app:srcCompat="@drawable/campana" />
-
-    <ImageButton
         android:id="@+id/imageButton4"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -240,11 +247,12 @@
         app:srcCompat="@drawable/informacion" />
 
     <ImageButton
-        android:id="@+id/imageButton5"
+        android:id="@+id/imageButton_Inventario"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:background="@drawable/cuestionario"
         android:scaleType="fitCenter"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/image1"
         app:layout_constraintEnd_toEndOf="@+id/image1"
         app:layout_constraintStart_toStartOf="@+id/image1"
@@ -320,18 +328,6 @@
         app:srcCompat="@drawable/mas" />
 
 
-    <ImageButton
-        android:id="@+id/btn_clinetes"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.692"
-        app:srcCompat="@drawable/button_diseno" />
-
     <SearchView
         android:id="@+id/search"
         android:layout_width="383dp"
@@ -342,6 +338,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="365dp"
@@ -352,6 +349,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search"
         app:layout_constraintVertical_bias="0.045" />
+
+
+
 
 
 
