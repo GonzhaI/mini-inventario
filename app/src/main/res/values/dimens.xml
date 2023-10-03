@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="recycler_view_width">343dp</dimen>
+    <dimen name="recycler_view_height">33dp</dimen>
+    <dimen name="full_height">343dp</dimen>
+    <dimen name="small_height">33dp</dimen>
+</resources>

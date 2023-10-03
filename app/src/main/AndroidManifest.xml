@@ -31,7 +31,9 @@
         <activity
 
             android:name=".Pag_Principal"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+
         <activity
             android:name=".ActivityRegistrarse"
             android:exported="false" />
