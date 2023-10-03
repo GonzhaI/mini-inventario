@@ -51,7 +51,7 @@ public class Pag_Principal extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        ImageButton bt_cliente = findViewById(R.id.clientes);
+        ImageButton bt_cliente = findViewById(R.id.btn_clinetes);
         bt_cliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
