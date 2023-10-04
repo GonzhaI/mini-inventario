@@ -63,8 +63,8 @@ public class Pag_Principal extends AppCompatActivity {
         bt_cliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent(Pag_Principal.this, ActivityIngresoCliente.class);
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, ActivityGestorCompradores.class);
                 startActivity(intent);
             }
         });
