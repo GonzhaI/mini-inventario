@@ -17,6 +17,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -106,26 +107,27 @@ public class ActivityGestorCompradores extends AppCompatActivity {
     }
 
     private void cargarClientesDesdeFirestore() {
-        // Consultar la colección "clientes" en Firestore
+        // Consultar la colección "clientes" en Firestore y ordenar por el campo "nombre" sin distinción entre mayúsculas y minúsculas
         CollectionReference clientesRef = db.collection("clientes");
-        clientesRef.addSnapshotListener(this, (value, error) -> {
-            if (error != null) {
-                // Manejar el error
-                return;
-            }
+        clientesRef.orderBy("nombre", Query.Direction.ASCENDING).orderBy("nombre", Query.Direction.DESCENDING)
+                .addSnapshotListener(this, (value, error) -> {
+                    if (error != null) {
+                        // Manejar el error
+                        return;
+                    }
 
-            // Borrar las filas existentes en la tabla (excepto la fila de encabezado)
-            int childCount = tableLayoutClientes.getChildCount();
-            if (childCount > 1) {
-                tableLayoutClientes.removeViews(1, childCount - 1);
-            }
+                    // Borrar las filas existentes en la tabla (excepto la fila de encabezado)
+                    int childCount = tableLayoutClientes.getChildCount();
+                    if (childCount > 1) {
+                        tableLayoutClientes.removeViews(1, childCount - 1);
+                    }
 
-            // Agregar clientes desde Firestore a la tabla
-            for (QueryDocumentSnapshot document : value) {
-                Cliente cliente = document.toObject(Cliente.class);
-                agregarClienteALaTabla(cliente.getNombre(), cliente.isEsDeudor(), cliente.getDiasRestantes(), cliente.getDescuento());
-            }
-        });
+                    // Agregar clientes desde Firestore a la tabla
+                    for (QueryDocumentSnapshot document : value) {
+                        Cliente cliente = document.toObject(Cliente.class);
+                        agregarClienteALaTabla(cliente.getNombre(), cliente.isEsDeudor(), cliente.getDiasRestantes(), cliente.getDescuento());
+                    }
+                });
     }
 
     private void agregarClienteALaTabla(String nombre, boolean esDeudor, int diasRestantes, int descuento) {
@@ -156,13 +158,48 @@ public class ActivityGestorCompradores extends AppCompatActivity {
         textViewDescuento.setText(String.valueOf(descuento) + "%");
         textViewDescuento.setLayoutParams(layoutParams);
 
+        // Boton para eliminar un cliente de la tabla y db
+        Button deleteButton = new Button(this);
+        deleteButton.setText("Eliminar");
+        deleteButton.setLayoutParams(layoutParams);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Obtener el nombre del cliente que se va a eliminar (puedes usar otro identificador único)
+                String nombreCliente = nombre;
+
+                // Llamar al método para eliminar el cliente de Firestore
+                eliminarClienteDeFirestore(nombreCliente);
+            }
+        });
+
         // Agregar TextViews a la fila
         newRow.addView(textViewNombre);
         newRow.addView(textViewDeudor);
         newRow.addView(textViewDiasRestantes);
         newRow.addView(textViewDescuento);
+        newRow.addView(deleteButton);
 
         // Agregar la nueva fila a la tabla
         tableLayoutClientes.addView(newRow);
+    }
+
+    // Método para eliminar un cliente de Firestore
+    private void eliminarClienteDeFirestore(String nombreCliente) {
+        CollectionReference clientesRef = db.collection("clientes");
+        clientesRef.whereEqualTo("nombre", nombreCliente)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Elimina el documento del cliente de Firestore
+                            document.getReference().delete();
+                        }
+                        // Vuelve a cargar los clientes desde Firestore para actualizar la tabla
+                        cargarClientesDesdeFirestore();
+                    } else {
+                        // Maneja el error
+                    }
+                });
     }
 }
