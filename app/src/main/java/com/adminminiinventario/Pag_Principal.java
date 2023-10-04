@@ -127,6 +127,16 @@ public class Pag_Principal extends AppCompatActivity {
         if (TextUtils.isEmpty(nombreProducto)) {
             productosList.clear();
             productosAdapter.notifyDataSetChanged();
+
+
+            // Restaura las dimensiones originales del RecyclerView
+            ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
+            layoutParams.height = getResources().getDimensionPixelSize(R.dimen.recycler_view_height);
+            ((ConstraintLayout.LayoutParams) layoutParams).topToTop = ConstraintLayout.LayoutParams.UNSET;
+            ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+            ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+            ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+            recyclerView.setLayoutParams(layoutParams);
             return;
         }
 
@@ -154,10 +164,19 @@ public class Pag_Principal extends AppCompatActivity {
                         ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.UNSET;
                         ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
                         ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
-
+                        
                         recyclerView.setLayoutParams(layoutParams);
                     } else {
-                        // Maneja errores si la consulta falla
+                        ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
+                        layoutParams.height = getResources().getDimensionPixelSize(R.dimen.recycler_view_height);
+
+                        ((ConstraintLayout.LayoutParams) layoutParams).topToTop = ConstraintLayout.LayoutParams.UNSET;
+                        ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+                        ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+                        ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+
+                        recyclerView.setLayoutParams(layoutParams);
+
                     }
                 });
     }
