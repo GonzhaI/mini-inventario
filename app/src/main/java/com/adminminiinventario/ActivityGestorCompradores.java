@@ -12,56 +12,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class ActivityGestorCompradores extends AppCompatActivity {
-    private DatabaseReference databaseReference;
+    private FirebaseFirestore db;
     private static final int REQUEST_CODE_INGRESO_CLIENTE = 1;
     private TableLayout tableLayoutClientes;
     private Button btnAgregarCliente;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gestor_compradores);
 
-        // Inicializa Firebase
-        FirebaseApp.initializeApp(this);
-
-        // Referencia a la base de datos Firebase
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("clientes");
-
-        // Agrega un oyente para escuchar los cambios en la base de datos
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                Cliente cliente = dataSnapshot.getValue(Cliente.class);
-
-                if (cliente != null) {
-                    agregarClienteALaTabla(cliente.getNombre(), cliente.isEsDeudor(), cliente.getDiasRestantes(), cliente.getDescuento());
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        // Inicializa Firebase Firestore
+        db = FirebaseFirestore.getInstance();
 
         tableLayoutClientes = findViewById(R.id.tableLayoutClientes);
         btnAgregarCliente = findViewById(R.id.btnAgregarCliente);
@@ -105,6 +76,9 @@ public class ActivityGestorCompradores extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_INGRESO_CLIENTE);
             }
         });
+
+        // Cargar clientes desde Firestore
+        cargarClientesDesdeFirestore();
     }
 
     @Override
@@ -119,10 +93,39 @@ public class ActivityGestorCompradores extends AppCompatActivity {
                 int diasRestantes = data.getIntExtra("diasRestantes", 0);
                 int descuento = data.getIntExtra("descuento", 0);
 
-                // Agregar los datos a la tabla
-                agregarClienteALaTabla(nombre, esDeudor, diasRestantes, descuento);
+                // Agregar los datos a Firestore
+                agregarClienteAFirestore(nombre, esDeudor, diasRestantes, descuento);
             }
         }
+    }
+
+    private void agregarClienteAFirestore(String nombre, boolean esDeudor, int diasRestantes, int descuento) {
+        // Agregar el cliente a Firestore
+        CollectionReference clientesRef = db.collection("clientes");
+        clientesRef.add(new Cliente(nombre, esDeudor, diasRestantes, descuento));
+    }
+
+    private void cargarClientesDesdeFirestore() {
+        // Consultar la colección "clientes" en Firestore
+        CollectionReference clientesRef = db.collection("clientes");
+        clientesRef.addSnapshotListener(this, (value, error) -> {
+            if (error != null) {
+                // Manejar el error
+                return;
+            }
+
+            // Borrar las filas existentes en la tabla (excepto la fila de encabezado)
+            int childCount = tableLayoutClientes.getChildCount();
+            if (childCount > 1) {
+                tableLayoutClientes.removeViews(1, childCount - 1);
+            }
+
+            // Agregar clientes desde Firestore a la tabla
+            for (QueryDocumentSnapshot document : value) {
+                Cliente cliente = document.toObject(Cliente.class);
+                agregarClienteALaTabla(cliente.getNombre(), cliente.isEsDeudor(), cliente.getDiasRestantes(), cliente.getDescuento());
+            }
+        });
     }
 
     private void agregarClienteALaTabla(String nombre, boolean esDeudor, int diasRestantes, int descuento) {
