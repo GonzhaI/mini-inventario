@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.content.Intent;
 
@@ -16,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +39,12 @@ public class Pag_Principal extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private List<Productos> productosList = new ArrayList<>();
+    private int recyclerViewWidth;
+    private int recyclerViewHeight;
+
+    // Restricciones iniciales del RecyclerView
+    private float initialVerticalBias = 0.3f;
+    private float initialHorizontalBias = 0.402f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +89,26 @@ public class Pag_Principal extends AppCompatActivity {
         productosAdapter = new ProductosAdapter(productosList);
         recyclerView.setAdapter(productosAdapter);
 
-        // Agrega un listener al SearchView para escuchar cambios de texto
+
+        // Configura el RecyclerView
+        recyclerViewWidth = getResources().getDimensionPixelSize(R.dimen.recycler_view_width);
+        recyclerViewHeight = getResources().getDimensionPixelSize(R.dimen.recycler_view_height);
+
+        ViewGroup.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                recyclerViewWidth,
+                recyclerViewHeight
+        );
+        ((ConstraintLayout.LayoutParams) layoutParams).verticalBias = initialVerticalBias;
+        ((ConstraintLayout.LayoutParams) layoutParams).horizontalBias = initialHorizontalBias;
+        recyclerView.setLayoutParams(layoutParams);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        productosAdapter = new ProductosAdapter(productosList);
+        recyclerView.setAdapter(productosAdapter);
+
+        // Configura el SearchView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -90,7 +117,6 @@ public class Pag_Principal extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // Filtra los resultados en tiempo real a medida que el usuario escribe en el SearchView
                 buscarProductoPorNombre(newText);
                 return true;
             }
@@ -98,33 +124,64 @@ public class Pag_Principal extends AppCompatActivity {
     }
 
     private void buscarProductoPorNombre(String nombreProducto) {
-        // Borra la lista de productos si no hay un nombre de producto válido
         if (TextUtils.isEmpty(nombreProducto)) {
             productosList.clear();
             productosAdapter.notifyDataSetChanged();
+
+
+            // Restaura las dimensiones originales del RecyclerView
+            ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
+            layoutParams.height = getResources().getDimensionPixelSize(R.dimen.recycler_view_height);
+            ((ConstraintLayout.LayoutParams) layoutParams).topToTop = ConstraintLayout.LayoutParams.UNSET;
+            ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+            ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+            ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+            recyclerView.setLayoutParams(layoutParams);
             return;
         }
 
-        // Realiza una consulta en Firestore para buscar productos por nombre
+        // Realiza una consulta en Firebase Firestore para buscar productos por nombre
         db.collection("productos")
                 .whereEqualTo("producto", nombreProducto)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
                         productosList.clear();
-                        for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                            Productos producto = snapshot.toObject(Productos.class);
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Productos producto = document.toObject(Productos.class);
                             productosList.add(producto);
                         }
                         productosAdapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Maneja errores de Firestore aquí si es necesario
+
+                        // Cambia las dimensiones del RecyclerView cuando se encuentra un dato
+                        ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
+                        layoutParams.height = getResources().getDimensionPixelSize(R.dimen.full_height);
+
+                        // Cambia la posición vertical del RecyclerView utilizando android:layout_marginTop
+                        ((ConstraintLayout.LayoutParams) layoutParams).topMargin = 100; // Coloca la cantidad de píxeles aquí
+                        ((ConstraintLayout.LayoutParams) layoutParams).topToTop = R.id.search;
+
+                        ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.UNSET;
+                        ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+                        ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+                        
+                        recyclerView.setLayoutParams(layoutParams);
+                    } else {
+                        ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
+                        layoutParams.height = getResources().getDimensionPixelSize(R.dimen.recycler_view_height);
+
+                        ((ConstraintLayout.LayoutParams) layoutParams).topToTop = ConstraintLayout.LayoutParams.UNSET;
+                        ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+                        ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+                        ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+
+                        recyclerView.setLayoutParams(layoutParams);
+
                     }
                 });
-        }
     }
+
+
+
+
+}
