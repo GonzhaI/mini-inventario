@@ -56,7 +56,7 @@ public class Pag_Principal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Crea un Intent para abrir Pagina Cliente
-                Intent intent = new Intent(Pag_Principal.this, ActivityIngresoCliente.class);
+                Intent intent = new Intent(Pag_Principal.this, ActivityGestorCompradores.class);
                 startActivity(intent);
             }
         });
