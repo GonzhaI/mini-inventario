@@ -29,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
         // Inicializa Firestore
         db = FirebaseFirestore.getInstance();
 
-        
-
- 
 
         bt_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
