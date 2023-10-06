@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActivityRegistrarse extends AppCompatActivity {
+
     EditText usuarioEditText, nombre_negocioNameEditText, correoEditText, contrasenaEditText, rep_contrasenaEditText;
     Button bt_ingresarButton;
     private FirebaseFirestore db;
@@ -32,6 +33,9 @@ public class ActivityRegistrarse extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrarse);
 
+
+
+        // Inicializa las variables dentro del método onCreate
         usuarioEditText = findViewById(R.id.inp_usuario);
         nombre_negocioNameEditText = findViewById(R.id.inp_nombre_negocio);
         correoEditText = findViewById(R.id.inp_correo);
@@ -75,6 +79,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
                 checkUserAndEmailExistence(username, email);
             }
         });
+
 
     }
 

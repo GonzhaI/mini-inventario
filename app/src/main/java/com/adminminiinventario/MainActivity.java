@@ -30,9 +30,6 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
 
-
-
-
         bt_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

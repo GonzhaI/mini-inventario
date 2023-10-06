@@ -1,7 +1,18 @@
 package com.adminminiinventario;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.content.Intent;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +42,24 @@ public class Pag_Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pag_principal);
+        ImageButton calendario = findViewById(R.id.calendario);
+        calendario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir pagina Calendario
+                Intent intent = new Intent(Pag_Principal.this, ActivityCalendario.class);
+                startActivity(intent);
+            }
+        });
+        ImageButton bt_cliente = findViewById(R.id.clientes);
+        bt_cliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, ActivityIngresoCliente.class);
+                startActivity(intent);
+            }
+        });
 
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.search);
