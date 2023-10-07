@@ -9,25 +9,32 @@ import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.annotation.NonNull;
-import android.util.Log;
 
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ActivityRegistrarse extends AppCompatActivity {
 
     EditText usuarioEditText, nombre_negocioNameEditText, correoEditText, contrasenaEditText, rep_contrasenaEditText;
     Button bt_ingresarButton;
-    private FirebaseFirestore db;
+
     private String businessName;
     private String password;
 
+    FirebaseFirestore db;
+    FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +49,9 @@ public class ActivityRegistrarse extends AppCompatActivity {
         contrasenaEditText = findViewById(R.id.inp_contraseña);
         rep_contrasenaEditText = findViewById(R.id.inp_rep_contraseña);
         bt_ingresarButton = findViewById(R.id.bt_ingresar);
-
-        // Inicializa la instancia de Firestore
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
 
         bt_ingresarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,23 +67,34 @@ public class ActivityRegistrarse extends AppCompatActivity {
                     return;
                 }
 
-                if (!isValidPassword(password)) {
+                else if (!isValidPassword(password)) {
                     showMessage("La contraseña debe tener al menos 8 caracteres y contener al menos 1 número.");
                     return;
                 }
 
-                if (!isValidEmail(email)) {
+                else if (!isValidEmail(email)) {
                     showMessage("El correo ingresado no es válido.");
                     return;
                 }
 
-                if (!password.equals(confirmPassword)) {
+                else if (!password.equals(confirmPassword)) {
                     showMessage("Las contraseñas no coinciden.");
                     return;
-                }
+                } else {
 
-                // Verifica si el usuario o el correo ya existen antes de continuar
-                checkUserAndEmailExistence(username, email);
+
+                                String nombreUsuario = usuarioEditText.getText().toString().trim();
+                                String nombreNeogocio = nombre_negocioNameEditText.getText().toString().trim();
+                                String correo = correoEditText.getText().toString().trim();
+                                String contrasena = contrasenaEditText.getText().toString().trim();
+                                findUser(nombreUsuario, nombreNeogocio, correo, contrasena);
+
+
+                    }
+
+
+
+
             }
         });
 
@@ -95,105 +113,86 @@ public class ActivityRegistrarse extends AppCompatActivity {
         // Verificar si el correo cumple con la expresión regular
         return email.matches(regex);
     }
+    private void findUser(String nombreUsuario, String nombreNegocio, String correo, String contrasena) {
+        db.collection("usuario")
+                .whereEqualTo("usuario", nombreUsuario)
+                .get()
+                .addOnCompleteListener(usernameQuery -> {
+                    if (usernameQuery.isSuccessful()) {
+                        if (usernameQuery.getResult().isEmpty()) {
+
+                            checkEmailAndRegister(nombreUsuario, nombreNegocio, correo, contrasena);
+                        } else {
+                            showMessage("El nombre de usuario ya está registrado");
+                        }
+                    } else {
+                        // Manejo de errores en la consulta de nombre de usuario
+                        showMessage("Error al comprobar la existencia del usuario.");
+                    }
+                });
+    }
+    private void checkEmailAndRegister(String nombreUsuario, String nombreNegocio, String correo, String contrasena) {
+        // Comprobar la existencia del correo electrónico
+        db.collection("usuario")
+                .whereEqualTo("correo", correo)
+                .get()
+                .addOnCompleteListener(emailQuery -> {
+                    if (emailQuery.isSuccessful()) {
+                        if (emailQuery.getResult().isEmpty()) {
+                            // El correo electrónico no existe, proceder con el registro
+                            register(nombreUsuario, nombreNegocio, correo, contrasena);
+                        } else {
+                            showMessage("El correo electrónico ya está registrado.");
+                        }
+                    } else {
+                        // Manejo de errores en la consulta de correo electrónico
+                        showMessage("Error al comprobar la existencia del correo electrónico.");
+                    }
+                });
+    }
+
 
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message)
-                .setTitle("Notificación Registro")
+                .setTitle("Error")
                 .setPositiveButton("Aceptar", null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    private void register(String nombreUsuario, String nombreNegocio, String correo, String contrasena){
+        auth.createUserWithEmailAndPassword(correo, contrasena).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                String id = auth.getCurrentUser().getUid();
+                Map<String, Object> map =new HashMap<>();
+                map.put("id", id);
+                map.put("usuario", nombreUsuario);
+                map.put("negocio", nombreNegocio);
+                map.put("correo",correo);
 
-    private void checkUserAndEmailExistence(final String username, final String email) {
-        // Realiza consultas para verificar si el usuario o el correo ya existen en la base de datos
-        // Aquí debes implementar la lógica para consultar Firestore y verificar la existencia
-        // Si el usuario o el correo no existen, puedes continuar con el registro, de lo contrario, muestra un mensaje de error
-
-        db.collection("usuarios")
-                .whereEqualTo("nombreUsuario", username)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-
-                    private void registerUser(final String username, final String businessName, final String email, final String password) {
-                        // Crear un mapa con los datos del usuario
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("username", username);
-                        user.put("businessName", businessName);
-                        user.put("email", email);
-
-                        // Agregar los datos del usuario a Firestore
-                        db.collection("usuarios")
-                                .add(user)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        showMessage("Registro exitoso. ID del documento: " + documentReference.getId());
-
-                                        // Redirigir al usuario a la página principal
-                                        Intent intent = new Intent(ActivityRegistrarse.this, Pag_Principal.class);
-                                        startActivity(intent);
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        String errorMessage = "Error al registrar el usuario: " + e.getMessage();
-                                        Log.e("Firebase", errorMessage);
-                                        showMessage(errorMessage);
-                                    }
-                                });
+                db.collection("usuario").document(id).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        finish();
+                        startActivity(new Intent(ActivityRegistrarse.this, Pag_Principal.class) );
+                        Toast.makeText(ActivityRegistrarse.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
                     }
-
-                    private boolean userOrEmailExists = false;
-
-// ...
-
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            showMessage("El usuario ya existe.");
-                            // Marcar que el usuario o correo ya existe
-                            userOrEmailExists = true;
-                        } else {
-                            // Verificar la existencia del correo
-                            db.collection("usuarios")
-                                    .whereEqualTo("correo", email)
-                                    .get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            if (!queryDocumentSnapshots.isEmpty()) {
-                                                showMessage("El correo ya está registrado.");
-                                                // Marcar que el usuario o correo ya existe
-                                                userOrEmailExists = true;
-                                            } else {
-                                                // Continuar con el registro porque el usuario y el correo no existen
-                                                if (!userOrEmailExists) {
-                                                    registerUser(username, businessName, email, password);
-                                                }
-                                            }
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            showMessage("Error al verificar el correo: " + e.getMessage());
-                                        }
-                                    });
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        showMessage("Error al verificar el usuario: " + e.getMessage());
+                        Toast.makeText(ActivityRegistrarse.this, "Error al guardar", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ActivityRegistrarse.this, "Error al registrar", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void registerUser(String username, String businessName, String email, String password) {
-        // Aquí debes implementar la lógica para registrar al usuario en Firestore
-        // Después de registrar al usuario, puedes redirigirlo a la página principal si es exitoso, o mostrar un mensaje de error si falla
-    }
+
 }
