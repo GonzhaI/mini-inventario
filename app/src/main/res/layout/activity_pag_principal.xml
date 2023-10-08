@@ -316,7 +316,7 @@
         android:clickable="true"/>
 
     <ImageButton
-        android:id="@+id/imageButton10"
+        android:id="@+id/agregarProducto"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:background="@drawable/mas"

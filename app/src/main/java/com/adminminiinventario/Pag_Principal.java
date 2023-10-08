@@ -59,6 +59,17 @@ public class Pag_Principal extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ImageButton agregarProductos = findViewById(R.id.agregarProducto);
+        agregarProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intento = new Intent(Pag_Principal.this, ActivityAgregarProducto.class);
+                startActivity(intento);
+            }
+        });
+
+
         ImageButton bt_cliente = findViewById(R.id.btn_clinetes);   
         bt_cliente.setOnClickListener(new View.OnClickListener() {
             @Override
