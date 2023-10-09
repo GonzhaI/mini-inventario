@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -29,6 +31,7 @@ import com.google.firebase.firestore.*;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Pag_Principal extends AppCompatActivity {
 
@@ -50,6 +53,14 @@ public class Pag_Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pag_principal);
+
+
+
+        TextView negocioNombreTextView = findViewById(R.id.negocioNombre);
+        String negocio = getIntent().getStringExtra("negocio");
+        negocioNombreTextView.setText(negocio);
+
+
         ImageButton calendario = findViewById(R.id.calendario);
         calendario.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,11 +71,12 @@ public class Pag_Principal extends AppCompatActivity {
             }
         });
 
+        Intent intento = new Intent(this, ActivityAgregarProducto.class);
+        intento.putExtra("negocio", negocio);
         ImageButton agregarProductos = findViewById(R.id.agregarProducto);
         agregarProductos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intento = new Intent(Pag_Principal.this, ActivityAgregarProducto.class);
                 startActivity(intento);
             }
         });
@@ -119,7 +131,7 @@ public class Pag_Principal extends AppCompatActivity {
         productosAdapter = new ProductosAdapter(productosList);
         recyclerView.setAdapter(productosAdapter);
 
-        // Configura el SearchView
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -128,13 +140,14 @@ public class Pag_Principal extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                buscarProductoPorNombre(newText);
+                String texto = newText.toLowerCase();
+                buscarProductoPorNombre(texto, negocio);
                 return true;
             }
         });
     }
 
-    private void buscarProductoPorNombre(String nombreProducto) {
+    private void buscarProductoPorNombre(String nombreProducto, String negocio) {
         if (TextUtils.isEmpty(nombreProducto)) {
             productosList.clear();
             productosAdapter.notifyDataSetChanged();
@@ -153,6 +166,7 @@ public class Pag_Principal extends AppCompatActivity {
 
         // Realiza una consulta en Firebase Firestore para buscar productos por nombre
         db.collection("productos")
+                .whereEqualTo("id_negocio", negocio)
                 .whereEqualTo("producto", nombreProducto)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -175,7 +189,7 @@ public class Pag_Principal extends AppCompatActivity {
                         ((ConstraintLayout.LayoutParams) layoutParams).bottomToBottom = ConstraintLayout.LayoutParams.UNSET;
                         ((ConstraintLayout.LayoutParams) layoutParams).leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
                         ((ConstraintLayout.LayoutParams) layoutParams).rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
-                        
+
                         recyclerView.setLayoutParams(layoutParams);
                     } else {
                         ViewGroup.LayoutParams layoutParams = recyclerView.getLayoutParams();
