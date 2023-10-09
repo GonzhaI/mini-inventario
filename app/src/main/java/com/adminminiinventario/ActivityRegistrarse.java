@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -121,7 +124,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
                     if (usernameQuery.isSuccessful()) {
                         if (usernameQuery.getResult().isEmpty()) {
 
-                            checkEmailAndRegister(nombreUsuario, nombreNegocio, correo, contrasena);
+                            checkEmail(nombreUsuario, nombreNegocio, correo, contrasena);
                         } else {
                             showMessage("El nombre de usuario ya está registrado");
                         }
@@ -131,7 +134,7 @@ public class ActivityRegistrarse extends AppCompatActivity {
                     }
                 });
     }
-    private void checkEmailAndRegister(String nombreUsuario, String nombreNegocio, String correo, String contrasena) {
+    private void checkEmail(String nombreUsuario, String nombreNegocio, String correo, String contrasena) {
         // Comprobar la existencia del correo electrónico
         db.collection("usuario")
                 .whereEqualTo("correo", correo)
@@ -175,8 +178,8 @@ public class ActivityRegistrarse extends AppCompatActivity {
                 db.collection("usuario").document(id).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        finish();
-                        startActivity(new Intent(ActivityRegistrarse.this, Pag_Principal.class) );
+
+                        obtenerNegocioYContinuar();
                         Toast.makeText(ActivityRegistrarse.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -192,6 +195,38 @@ public class ActivityRegistrarse extends AppCompatActivity {
                 Toast.makeText(ActivityRegistrarse.this, "Error al registrar", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void obtenerNegocioYContinuar() {
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DocumentReference usuarioRef = db.collection("usuario").document(userId);
+
+            usuarioRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String negocio = documentSnapshot.getString("negocio");
+                        if (negocio != null) {
+                            // Iniciar la actividad Pag_Principal y pasar el valor de "negocio"
+                            Intent intent = new Intent(ActivityRegistrarse.this, Pag_Principal.class);
+                            intent.putExtra("negocio", negocio);
+                            startActivity(intent);
+                            finish(); // Cerrar la actividad actual
+                        } else {
+                            showMessage("El campo 'negocio' no existe en el documento del usuario.");
+                        }
+                    } else {
+                        showMessage("El documento del usuario no existe en Firestore.");
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    showMessage("Error al obtener el campo 'negocio' del usuario.");
+                }
+            });
+        }
     }
 
 

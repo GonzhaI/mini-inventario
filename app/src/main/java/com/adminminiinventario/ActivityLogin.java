@@ -18,6 +18,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -65,24 +68,58 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    finish();
-                    startActivity(new Intent(ActivityLogin.this, Pag_Principal.class) );
+
+                    obtenerNegocioYContinuar();
                     Toast.makeText(ActivityLogin.this, "Bienvenido", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(ActivityLogin.this, "Error al ingresar datos", Toast.LENGTH_SHORT).show();
-                }String errorMessage = "Error al iniciar sesión. Verifique sus credenciales.";
+                }
                 if (task.getException() != null) {
+                    String errorMessage = "Error al iniciar sesión. Verifique sus credenciales.";
                     Exception exception = task.getException();
                     errorMessage = exception.getMessage(); // Obtener el mensaje de error específico
+                    showMessage(errorMessage);
                 }
-                showMessage(errorMessage);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ActivityLogin.this, "Error en Base de Datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityLogin.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void obtenerNegocioYContinuar() {
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DocumentReference usuarioRef = db.collection("usuario").document(userId);
+
+            usuarioRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String negocio = documentSnapshot.getString("negocio");
+                        if (negocio != null) {
+                            // Iniciar la actividad Pag_Principal y pasar el valor de "negocio"
+                            Intent intent = new Intent(ActivityLogin.this, Pag_Principal.class);
+                            intent.putExtra("negocio", negocio);
+                            startActivity(intent);
+                            finish(); // Cerrar la actividad actual
+                        } else {
+                            showMessage("El campo 'negocio' no existe en el documento del usuario.");
+                        }
+                    } else {
+                        showMessage("El documento del usuario no existe en Firestore.");
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    showMessage("Error al obtener el campo 'negocio' del usuario.");
+                }
+            });
+        }
     }
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
