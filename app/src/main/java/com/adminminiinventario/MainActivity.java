@@ -11,6 +11,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private FirebaseFirestore db;
 
     Button bt_ingresar;
@@ -50,5 +51,8 @@ public class MainActivity extends AppCompatActivity {
         // Crear un Intent para ir a la otra actividad
         Intent intent = new Intent(this, ActivityLogin.class);
         startActivity(intent);
+    }
+
+    public void abrirCalendarioAlimentos(View view) {
     }
 }
