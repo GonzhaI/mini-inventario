@@ -15,18 +15,21 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.Timestamp;
 
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 
 public class ActivityCalendario extends AppCompatActivity {
     TextView tv;
     Button botonFechaP;
-    private String fecha;
+    private Timestamp fechaTimestamp; // Cambio aquí
 
     private FirebaseFirestore db;
 
@@ -48,18 +51,25 @@ public class ActivityCalendario extends AppCompatActivity {
         DatePickerDialog dpd = new DatePickerDialog(ActivityCalendario.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                fecha = dayOfMonth + "/" + (month + 1) + "/" + year;
-                tv.setText(fecha);
+                // Crea un Timestamp con la fecha seleccionada
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                fechaTimestamp = new Timestamp(calendar.getTime());
+
+                // Actualiza el TextView con la fecha formateada
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String fechaFormateada = sdf.format(calendar.getTime());
+                tv.setText(fechaFormateada);
             }
         }, anio, mes, dia);
         dpd.show();
     }
 
     public void MostrarMensaje(View view) {
-        if (fecha != null && !fecha.isEmpty()) {
-            // Aquí, enviamos la fecha a Firebase Firestore
+        if (fechaTimestamp != null) {
+            // Aquí, enviamos el Timestamp a Firebase Firestore
             Map<String, Object> datos = new HashMap<>();
-            datos.put("Fecha", fecha);
+            datos.put("Fecha", fechaTimestamp);
 
             // "fechaPrueba" es el nombre de tu colección en Firestore
             db.collection("fechaPrueba").add(datos)
