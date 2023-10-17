@@ -18,6 +18,9 @@
         android:hardwareAccelerated="true"
         tools:targetApi="31">
         <activity
+            android:name=".ActivityAlimentosVencidos"
+            android:exported="false" />
+        <activity
             android:name=".ActivityAgregarProducto"
             android:exported="false" />
         <activity

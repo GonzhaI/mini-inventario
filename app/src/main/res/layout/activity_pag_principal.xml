@@ -302,7 +302,7 @@
         app:srcCompat="@drawable/estar" />
 
     <ImageButton
-        android:id="@+id/imageButton8"
+        android:id="@+id/alimentosVencer"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:scaleType="fitCenter"
