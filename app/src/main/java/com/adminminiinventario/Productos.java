@@ -1,4 +1,4 @@
-package com.adminminiinventario.model;
+package com.adminminiinventario;
 
 public class Productos {
 

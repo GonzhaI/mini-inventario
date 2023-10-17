@@ -51,14 +51,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/bt_camera_cdBarras"
-        android:layout_width="105dp"
-        android:layout_height="45dp"
+        android:id="@+id/btnScanCodigoBarras"
+        android:layout_width="106dp"
+        android:layout_height="46dp"
         android:layout_marginStart="95dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="316dp"
         android:backgroundTint="#EB5E28"
-        android:text="camara"
+        android:text="Escanea"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
