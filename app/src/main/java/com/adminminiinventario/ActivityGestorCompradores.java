@@ -60,7 +60,7 @@ public class ActivityGestorCompradores extends AppCompatActivity {
         headerDiasRestantes.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
         headerDescuento.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
 
-        // Agregar titulos a las columnas
+
         headerRow.addView(headerNombre);
         headerRow.addView(headerDeudor);
         headerRow.addView(headerDiasRestantes);
