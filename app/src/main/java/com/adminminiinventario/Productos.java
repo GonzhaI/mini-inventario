@@ -1,5 +1,7 @@
 package com.adminminiinventario;
 
+import com.google.firebase.Timestamp;
+
 public class Productos {
 
     private String id_negocio;
@@ -8,15 +10,18 @@ public class Productos {
     private String producto;
     private int valor;
 
+    private Timestamp fechaVencimiento;
+
     public Productos() {
     }
 
-    public Productos(String id_negocio, int cantidad, String cdBarra, String producto, int valor) {
+    public Productos(String id_negocio, int cantidad, String cdBarra, String producto, int valor, Timestamp fechaVencimiento) {
         this.id_negocio = id_negocio;
         this.cantidad = cantidad;
         this.cdBarra = cdBarra;
         this.producto = producto;
         this.valor = valor;
+        this.fechaVencimiento = fechaVencimiento;
     }
 
     public String getId_negocio() {
@@ -57,6 +62,14 @@ public class Productos {
 
     public void setValor(int valor) {
         this.valor = valor;
+    }
+
+    public Timestamp getfechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setfechaVencimiento(Timestamp fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
     }
 }
 

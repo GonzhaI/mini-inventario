@@ -1,8 +1,18 @@
 package com.adminminiinventario;
 
+import android.app.AppOpsManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.app.DatePickerDialog;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -13,6 +23,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,6 +36,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -72,22 +87,12 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                 if (producto.isEmpty()) {
                     showMessage("Por favor, completa todos los campos.");
                 } else {
-                    // Crear un nuevo mapa de datos para almacenar en Firestore
-                    Map<String, Object> datos = new HashMap<>();
-                    datos.put("idNegocio", idNegocio);
-                    datos.put("cantidad", cantidadInt);
-                    datos.put("cdBarras", cdBarras);
-                    datos.put("producto", producto);
-                    datos.put("valor", valorInt);
-
-                    // Agregar el Timestamp si existe
-                    if (fechaVencimiento != null) {
-                        datos.put("fechaVencimiento", fechaVencimiento);
-                    }
+                    // Crear una nueva instancia de Productos
+                    Productos nuevoProducto = new Productos(idNegocio, cantidadInt, cdBarras, producto, valorInt, fechaVencimiento);
 
                     // Guardar en Firebase Firestore
                     db.collection("productos")
-                            .add(datos)
+                            .add(nuevoProducto)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
@@ -118,6 +123,8 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                 intent.initiateScan();
             }
         });
+
+
     }
 
     public void abrirCalendarioAlimentos(View view) {
@@ -138,6 +145,9 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 String fechaFormateada = sdf.format(calendar.getTime());
                 MostrarFecha.setText(fechaFormateada);
+
+                // Imprime la fecha en la consola
+                Log.d("Fecha", "Fecha seleccionada: " + fechaFormateada);
             }
         }, anio, mes, dia);
         dpd.show();
@@ -158,7 +168,7 @@ public class ActivityAgregarProducto extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
         if (result != null) {
-            if (result.getContents() == null){
+            if (result.getContents() == null) {
                 Toast.makeText(this, "Lectura Cancelada", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
@@ -170,4 +180,9 @@ public class ActivityAgregarProducto extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+
+
+
 }
