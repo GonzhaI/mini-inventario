@@ -21,6 +21,9 @@
             android:name=".ActivityAlimentosVencidos"
             android:exported="false" />
         <activity
+            android:name=".Generar_Informe"
+            android:exported="false" />
+        <activity
             android:name=".ActivityAgregarProducto"
             android:exported="false" />
         <activity
