@@ -7,12 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".inventario">
 
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Inventario."
-        android:textSize="34sp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mostrar_casillas_prin"
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
