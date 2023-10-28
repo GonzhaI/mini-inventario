@@ -4,12 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,116 +22,163 @@ import com.google.firebase.firestore.DocumentReference;
 import com.adminminiinventario.model.Productos;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 public class ActivityAgregarProducto extends AppCompatActivity {
+
     TextView MostrarFecha;
     EditText nombreProducto, cdBarrasProducto, cantidadProducto, valorProducto;
-    private Timestamp fechaVencimiento;
-    Button btnCamaraCdBarras, btnCamaraImagenProducto, btnAgregarProducto;
+    private ImageView imagenProducto;
+    Button btnCamaraImagenProducto, btnAgregarProducto;
+    private static final int REQUEST_IMAGE_CAPTURE_PRODUCT = 2;
     FirebaseFirestore db;
+    private Timestamp fechaVencimiento;
+    private Bitmap imageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_producto);
 
-        // Inicializar los elementos de la interfaz
         MostrarFecha = findViewById(R.id.MostrarFecha);
         nombreProducto = findViewById(R.id.producto);
         cdBarrasProducto = findViewById(R.id.cdBarra);
         cantidadProducto = findViewById(R.id.cantidad);
         valorProducto = findViewById(R.id.valor);
         btnAgregarProducto = findViewById(R.id.btn_agregar_producto);
-        btnCamaraCdBarras = findViewById(R.id.bt_camera_cdBarras);
         btnCamaraImagenProducto = findViewById(R.id.btn_imagen_producto);
-
+        imagenProducto = findViewById(R.id.imagen_producto);
         db = FirebaseFirestore.getInstance();
 
-        TextView negocioNombreTextView = findViewById(R.id.negocioNombre);
-        String negocio = getIntent().getStringExtra("negocio");
-        negocioNombreTextView.setText(negocio);
+        btnCamaraImagenProducto.setOnClickListener(v -> dispatchTakePictureIntent());
 
-        btnAgregarProducto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String idNegocio = negocio.toLowerCase();
-                String producto = nombreProducto.getText().toString().trim().toLowerCase();
-                String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
-                String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
-                String valor = valorProducto.getText().toString().trim().toLowerCase();
+        MostrarFecha.setOnClickListener(v -> abrirCalendarioAlimentos());
 
-                int cantidadInt = Integer.parseInt(cantidad);
-                int valorInt = Integer.parseInt(valor);
+        btnAgregarProducto.setOnClickListener(view -> agregarProductoAFirebase());
+    }
 
-                if (producto.isEmpty()) {
-                    showMessage("Por favor, completa todos los campos.");
-                } else {
-                    // Crear un nuevo mapa de datos para almacenar en Firestore
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE_PRODUCT);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE_PRODUCT && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            imagenProducto.setImageBitmap(imageBitmap);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void abrirCalendarioAlimentos() {
+        final Calendar calendario = Calendar.getInstance();
+        int anio = calendario.get(Calendar.YEAR);
+        int mes = calendario.get(Calendar.MONTH);
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dpd = new DatePickerDialog(ActivityAgregarProducto.this, (datePicker, year, month, dayOfMonth) -> {
+            calendario.set(year, month, dayOfMonth);
+            fechaVencimiento = new Timestamp(calendario.getTime());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String fechaFormateada = sdf.format(calendario.getTime());
+            MostrarFecha.setText(fechaFormateada);
+        }, anio, mes, dia);
+        dpd.show();
+    }
+
+    private void agregarProductoAFirebase() {
+        String producto = nombreProducto.getText().toString().trim().toLowerCase();
+        String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
+        String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
+        String valor = valorProducto.getText().toString().trim().toLowerCase();
+
+        int cantidadInt = Integer.parseInt(cantidad);
+        int valorInt = Integer.parseInt(valor);
+
+        if (producto.isEmpty()) {
+            showMessage("Por favor, completa todos los campos.");
+        } else {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("imagenes_productos").child(cdBarras + ".jpg");
+
+            UploadTask uploadTask = storageRef.putBytes(data);
+            uploadTask.addOnFailureListener(exception -> {
+                showMessage("Error al subir la imagen: " + exception.getMessage());
+            }).addOnSuccessListener(taskSnapshot -> {
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+
                     Map<String, Object> datos = new HashMap<>();
-                    datos.put("idNegocio", idNegocio);
                     datos.put("cantidad", cantidadInt);
                     datos.put("cdBarras", cdBarras);
                     datos.put("producto", producto);
                     datos.put("valor", valorInt);
+                    datos.put("imagenUrl", imageUrl);
 
-                    // Agregar el Timestamp si existe
                     if (fechaVencimiento != null) {
                         datos.put("fechaVencimiento", fechaVencimiento);
                     }
 
-                    // Guardar en Firebase Firestore
                     db.collection("productos")
                             .add(datos)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    showMessage("Producto agregado con éxito.");
-                                }
+                            .addOnSuccessListener(documentReference -> {
+                                showMessage("Producto agregado con éxito.");
                             })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    showMessage("Error al agregar el producto: " + e.getMessage());
-                                }
+                            .addOnFailureListener(e -> {
+                                showMessage("Error al agregar el producto: " + e.getMessage());
                             });
-                }
-            }
-        });
-    }
-
-    public void abrirCalendarioAlimentos(View view) {
-        Calendar cal = Calendar.getInstance();
-        int anio = cal.get(Calendar.YEAR);
-        int mes = cal.get(Calendar.MONTH);
-        int dia = cal.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog dpd = new DatePickerDialog(ActivityAgregarProducto.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                // Crea un Timestamp con la fecha seleccionada
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                fechaVencimiento = new Timestamp(calendar.getTime());
-
-                // Actualiza el TextView con la fecha formateada
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                String fechaFormateada = sdf.format(calendar.getTime());
-                MostrarFecha.setText(fechaFormateada);
-            }
-        }, anio, mes, dia);
-        dpd.show();
+                });
+            });
+        }
     }
 
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message)
-                .setTitle("Notificacion")
-                .setPositiveButton("Aceptar", null);
+                .setTitle("Notificación")
+                .setPositiveButton("Aceptar", (dialog, id) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();

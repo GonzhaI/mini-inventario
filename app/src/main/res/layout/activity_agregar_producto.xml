@@ -259,6 +259,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.86" />
+
+    <ImageView
+        android:id="@+id/imagen_producto"
+        android:layout_width="63dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/MostrarFecha"
+        app:layout_constraintStart_toEndOf="@+id/btn_imagen_producto"
+        app:srcCompat="@drawable/informacion" />
     />
 
 

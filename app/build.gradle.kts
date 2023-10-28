@@ -38,6 +38,7 @@ dependencies {
     //login y register
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-auth")
+    implementation ("com.google.firebase:firebase-storage:20.0.0")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
