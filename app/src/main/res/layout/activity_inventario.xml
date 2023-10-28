@@ -3,17 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#F2F4F3"
     android:layout_height="match_parent"
+    android:background="#F2F4F3"
     tools:context=".inventario">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mostrar_casillas_prin"
         android:layout_width="409dp"
         android:layout_height="729dp"
-        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/botonGenerarInforme"
+        android:layout_width="199dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="196dp"
+        android:layout_marginBottom="24dp"
+        android:text="Generar Informe"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
