@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adminminiinventario.adapter.ProductosAdapter;
-import com.adminminiinventario.model.Productos;
+import com.adminminiinventario.Productos;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.*;
@@ -77,7 +77,7 @@ public class Pag_Principal extends AppCompatActivity {
         alimentosVencer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Crea un Intent para abrir pagina Calendario
+
                 Intent intent = new Intent(Pag_Principal.this, ActivityAlimentosVencidos.class);
                 startActivity(intent);
             }
