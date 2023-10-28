@@ -90,7 +90,7 @@ public class ActivityAgregarProducto extends AppCompatActivity {
     TextView MostrarFecha;
     EditText nombreProducto, cdBarrasProducto, cantidadProducto, valorProducto;
     private ImageView imagenProducto;
-    Button btnCamaraImagenProducto, btnAgregarProducto;
+    Button btnCamaraImagenProducto, btnAgregarProducto, btnScanCodigoBarras;
     private static final int REQUEST_IMAGE_CAPTURE_PRODUCT = 2;
     FirebaseFirestore db;
     private Timestamp fechaVencimiento;
@@ -107,13 +107,12 @@ public class ActivityAgregarProducto extends AppCompatActivity {
         cantidadProducto = findViewById(R.id.cantidad);
         valorProducto = findViewById(R.id.valor);
         btnAgregarProducto = findViewById(R.id.btn_agregar_producto);
-
-        btnCamaraCdBarras = findViewById(R.id.btnScanCodigoBarras);
+        btnScanCodigoBarras = findViewById(R.id.btnScanCodigoBarras);
+        btnScanCodigoBarras.setOnClickListener(v -> escanearCodigoBarras());
 
         btnCamaraImagenProducto = findViewById(R.id.btn_imagen_producto);
         imagenProducto = findViewById(R.id.imagen_producto);
         db = FirebaseFirestore.getInstance();
-
 
         btnCamaraImagenProducto.setOnClickListener(v -> dispatchTakePictureIntent());
 
@@ -121,7 +120,16 @@ public class ActivityAgregarProducto extends AppCompatActivity {
 
         btnAgregarProducto.setOnClickListener(view -> agregarProductoAFirebase());
     }
-
+    private void escanearCodigoBarras() {
+        IntentIntegrator intent = new IntentIntegrator(this);
+        intent.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+        intent.setPrompt("Escanear Codigo");
+        intent.setCameraId(0);
+        intent.setBeepEnabled(true);
+        intent.setBarcodeImageEnabled(true);
+        intent.setOrientationLocked(true);
+        intent.initiateScan();
+    }
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -131,14 +139,27 @@ public class ActivityAgregarProducto extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == REQUEST_IMAGE_CAPTURE_PRODUCT && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             imageBitmap = (Bitmap) extras.get("data");
             imagenProducto.setImageBitmap(imageBitmap);
-        }
+        } else {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        super.onActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Toast.makeText(this, "Lectura Cancelada", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                    cdBarrasProducto.setText(result.getContents());
+                }
+            }
+        }
     }
+
+
 
     public void abrirCalendarioAlimentos() {
         final Calendar calendario = Calendar.getInstance();
@@ -158,6 +179,11 @@ public class ActivityAgregarProducto extends AppCompatActivity {
     }
 
     private void agregarProductoAFirebase() {
+        TextView negocioNombreTextView = findViewById(R.id.negocioNombre);
+        String negocio = getIntent().getStringExtra("negocio");
+        negocioNombreTextView.setText(negocio);
+
+        String idNegocio = negocio.toLowerCase();
         String producto = nombreProducto.getText().toString().trim().toLowerCase();
         String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
         String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
@@ -183,6 +209,7 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                     String imageUrl = uri.toString();
 
                     Map<String, Object> datos = new HashMap<>();
+                    datos.put("id_negocio", idNegocio);
                     datos.put("cantidad", cantidadInt);
                     datos.put("cdBarras", cdBarras);
                     datos.put("producto", producto);
@@ -193,71 +220,50 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                         datos.put("fechaVencimiento", fechaVencimiento);
                     }
 
-        TextView negocioNombreTextView = findViewById(R.id.negocioNombre);
-        String negocio = getIntent().getStringExtra("negocio");
-        negocioNombreTextView.setText(negocio);
 
-        btnAgregarProducto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String idNegocio = negocio.toLowerCase();
-                String producto = nombreProducto.getText().toString().trim().toLowerCase();
-                String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
-                String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
-                String valor = valorProducto.getText().toString().trim().toLowerCase();
+                    negocioNombreTextView.setText(negocio);
 
-                int cantidadInt = Integer.parseInt(cantidad);
-                int valorInt = Integer.parseInt(valor);
+                    btnAgregarProducto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String idNegocio = negocio.toLowerCase();
+                            String producto = nombreProducto.getText().toString().trim().toLowerCase();
+                            String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
+                            String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
+                            String valor = valorProducto.getText().toString().trim().toLowerCase();
 
-                if (producto.isEmpty()) {
-                    showMessage("Por favor, completa todos los campos.");
-                } else {
-                    // Crear una nueva instancia de Productos
-                    Productos nuevoProducto = new Productos(idNegocio, cantidadInt, cdBarras, producto, valorInt, fechaVencimiento);
+                            int cantidadInt = Integer.parseInt(cantidad);
+                            int valorInt = Integer.parseInt(valor);
 
+                            if (producto.isEmpty()) {
+                                showMessage("Por favor, completa todos los campos.");
+                            } else {
+                                // Crear una nueva instancia de Productos
+                                Productos nuevoProducto = new Productos(idNegocio, cantidadInt, cdBarras, producto, valorInt, fechaVencimiento, imageUrl);
 
-                    db.collection("productos")
+                                db.collection("productos")
+                                        .add(datos)
+                                        .addOnSuccessListener(documentReference -> {
+                                            showMessage("Producto agregado con éxito.");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            showMessage("Error al agregar el producto: " + e.getMessage());
+                                        });
 
-                            .add(datos)
-                            .addOnSuccessListener(documentReference -> {
-                                showMessage("Producto agregado con éxito.");
-
-                            .add(nuevoProducto)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    showMessage("Producto agregado con éxito.");
-                                }
-
-                            })
-                            .addOnFailureListener(e -> {
-                                showMessage("Error al agregar el producto: " + e.getMessage());
-                            });
-
+                                db.collection("productos")
+                                        .add(nuevoProducto)
+                                        .addOnSuccessListener(documentReference -> {
+                                            showMessage("Producto agregado con éxito.");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            showMessage("Error al agregar el producto: " + e.getMessage());
+                                        });
+                            }
+                        }
+                    });
                 });
             });
         }
-
-                }
-            }
-        });
-
-        btnCamaraCdBarras.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Lanza la actividad de escaneo de codigo de barras
-                IntentIntegrator intent = new IntentIntegrator(ActivityAgregarProducto.this);
-                intent.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                intent.setPrompt("Escanear Codigo");
-                intent.setCameraId(0);
-                intent.setBeepEnabled(true);
-                intent.setBarcodeImageEnabled(true);
-                intent.setOrientationLocked(true);
-                intent.initiateScan();
-            }
-        });
-
-
     }
 
     public void abrirCalendarioAlimentos(View view) {
@@ -284,7 +290,6 @@ public class ActivityAgregarProducto extends AppCompatActivity {
             }
         }, anio, mes, dia);
         dpd.show();
-
     }
 
     private void showMessage(String message) {
@@ -296,27 +301,6 @@ public class ActivityAgregarProducto extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Lectura Cancelada", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
-                cdBarrasProducto.setText(result.getContents());
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-
 
 
 }

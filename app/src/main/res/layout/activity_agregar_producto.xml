@@ -258,7 +258,7 @@
         app:layout_constraintHorizontal_bias="0.836"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-<<<<<<< Updated upstream
+
         app:layout_constraintVertical_bias="0.86" />
 
     <ImageView
@@ -270,10 +270,10 @@
         app:layout_constraintBottom_toTopOf="@+id/MostrarFecha"
         app:layout_constraintStart_toEndOf="@+id/btn_imagen_producto"
         app:srcCompat="@drawable/informacion" />
-=======
-        app:layout_constraintVertical_bias="0.85" />
->>>>>>> Stashed changes
-    />
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
