@@ -57,4 +57,6 @@ dependencies {
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation ("com.itextpdf:itext7-core:7.1.15")
 
+
+
 }

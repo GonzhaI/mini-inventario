@@ -1,12 +1,16 @@
 package com.adminminiinventario;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adminminiinventario.adapter.InventarioAdapter;
+import com.adminminiinventario.adapter.Producto;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,13 +23,15 @@ import java.io.File;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 
 public class inventario extends AppCompatActivity {
     private FirebaseFirestore db;
     private RecyclerView recyclerView;
     private InventarioAdapter adapter;
-    private List<String> productList = new ArrayList<>();
+    private List<Producto> productList = new ArrayList<>();
     private FirebaseAuth mAuth;
     private ListenerRegistration userDataListener;
 
@@ -34,6 +40,7 @@ public class inventario extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseApp.initializeApp(this); // Asegúrate de que estás inicializando Firebase adecuadamente
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventario);
 
@@ -79,6 +86,7 @@ public class inventario extends AppCompatActivity {
     }
 
     private void obtenerProductosDelNegocio(String negocio) {
+        Log.d("MiApp", "Productos obtenidos: " + productList.size());
         db.collection("productos")
                 .whereEqualTo("id_negocio", negocio.toLowerCase())
                 .get()
@@ -88,14 +96,25 @@ public class inventario extends AppCompatActivity {
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String nombre_producto = document.getString("producto");
-                            productList.add(nombre_producto);
+                            Double precio = document.getDouble("valor");
+                            Timestamp fechaVencimientoTimestamp = document.getTimestamp("fechaVencimiento");
+
+                            if (nombre_producto != null && precio != null) {
+                                // Verifica si hay fecha de vencimiento
+                                Date fechaVencimientoDate = null;
+                                if (fechaVencimientoTimestamp != null) {
+                                    fechaVencimientoDate = fechaVencimientoTimestamp.toDate();
+                                }
+
+                                Producto producto = new Producto(nombre_producto, precio, fechaVencimientoDate);
+                                productList.add(producto);
+                            }
                         }
 
                         // Notifica al adaptador que los datos han cambiado
                         adapter.notifyDataSetChanged();
-                    } else {
-                        // Manejar el caso de error si es necesario
                     }
+
                 });
     }
 
