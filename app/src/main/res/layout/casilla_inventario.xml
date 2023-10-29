@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:layout_height="104dp"
         android:background="#48A9A6"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
@@ -24,7 +24,7 @@
             android:padding="6dp">
 
             <ImageView
-                android:id="@+id/Imagen_producto"
+                android:id="@+id/imagen_producto"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_alignParentStart="true"
@@ -32,7 +32,7 @@
                 android:layout_centerVertical="true"
                 android:paddingRight="14dp"
                 android:paddingLeft="14dp"
-                app:srcCompat="@drawable/agregar_usuario" />
+                app:srcCompat="@drawable/imagen_predeterminada" />
 
             <LinearLayout
                 android:id="@+id/wa"
@@ -40,19 +40,21 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_toEndOf="@+id/Imagen_producto"
-                android:layout_toRightOf="@+id/Imagen_producto"
+                android:layout_marginTop="1dp"
+                android:layout_toEndOf="@+id/imagen_producto"
+                android:layout_toRightOf="@+id/imagen_producto"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/nombre_producto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="164dp"
+                    android:layout_height="54dp"
                     android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="Nombre Producto"
                     android:textColor="@color/white"
-                    android:textSize="24dp"
+                    android:textSize="22dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -61,6 +63,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="Fecha de vencimiento" />
+
+                <TextView
+                    android:id="@+id/producto_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0000000000"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -69,22 +78,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="1dp"
                 android:layout_marginTop="12dp"
                 android:layout_toStartOf="@+id/wa"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/precio"
-                    android:layout_width="100dp"
+                    android:layout_width="139dp"
                     android:layout_height="70dp"
-                    android:textSize="35dp"
-                    android:textAlignment="center"
-                    android:text="0000"
-                    android:textColor="@color/white"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"
+                    android:text="0000000"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="35dp" />
 
             </LinearLayout>
         </RelativeLayout>
