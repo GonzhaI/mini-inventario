@@ -2,7 +2,9 @@ package com.adminminiinventario;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,11 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import android.widget.Button;
-import android.view.View;
 import java.io.File;
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,6 +96,8 @@ public class inventario extends AppCompatActivity {
                             String nombre_producto = document.getString("producto");
                             Double precio = document.getDouble("valor");
                             Timestamp fechaVencimientoTimestamp = document.getTimestamp("fechaVencimiento");
+                            String imagenURL = document.getString("imagenUrl"); // Obtiene la URL de la imagen
+                            String codigo_barra = document.getString("cdBarras");
 
                             if (nombre_producto != null && precio != null) {
                                 // Verifica si hay fecha de vencimiento
@@ -106,7 +106,7 @@ public class inventario extends AppCompatActivity {
                                     fechaVencimientoDate = fechaVencimientoTimestamp.toDate();
                                 }
 
-                                Producto producto = new Producto(nombre_producto, precio, fechaVencimientoDate);
+                                Producto producto = new Producto(nombre_producto, precio, fechaVencimientoDate, imagenURL, codigo_barra);
                                 productList.add(producto);
                             }
                         }
@@ -114,7 +114,6 @@ public class inventario extends AppCompatActivity {
                         // Notifica al adaptador que los datos han cambiado
                         adapter.notifyDataSetChanged();
                     }
-
                 });
     }
 
