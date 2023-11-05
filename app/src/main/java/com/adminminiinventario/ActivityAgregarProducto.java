@@ -179,22 +179,20 @@ public class ActivityAgregarProducto extends AppCompatActivity {
     }
 
     private void agregarProductoAFirebase() {
-        TextView negocioNombreTextView = findViewById(R.id.negocioNombre);
-        String negocio = getIntent().getStringExtra("negocio");
-        negocioNombreTextView.setText(negocio);
+        // Obtener los valores de los campos
+        String producto = nombreProducto.getText().toString().trim();
+        String cdBarras = cdBarrasProducto.getText().toString().trim();
+        String cantidadStr = cantidadProducto.getText().toString().trim();
+        String valorStr = valorProducto.getText().toString().trim();
+        String idNegocio = getIntent().getStringExtra("negocio"); // Obtener el id_negocio
 
-        String idNegocio = negocio.toLowerCase();
-        String producto = nombreProducto.getText().toString().trim().toLowerCase();
-        String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
-        String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
-        String valor = valorProducto.getText().toString().trim().toLowerCase();
-
-        int cantidadInt = Integer.parseInt(cantidad);
-        int valorInt = Integer.parseInt(valor);
-
-        if (producto.isEmpty()) {
+        // Validación de campos vacíos
+        if (producto.isEmpty() || cdBarras.isEmpty() || cantidadStr.isEmpty() || valorStr.isEmpty()) {
             showMessage("Por favor, completa todos los campos.");
         } else {
+            int cantidad = Integer.parseInt(cantidadStr);
+            int valor = Integer.parseInt(valorStr);
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
@@ -209,58 +207,24 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                     String imageUrl = uri.toString();
 
                     Map<String, Object> datos = new HashMap<>();
+                    // Agregar los datos del producto al Map
                     datos.put("id_negocio", idNegocio);
-                    datos.put("cantidad", cantidadInt);
-                    datos.put("cdBarras", cdBarras);
                     datos.put("producto", producto);
-                    datos.put("valor", valorInt);
+                    datos.put("cdBarras", cdBarras);
+                    datos.put("cantidad", cantidad);
+                    datos.put("valor", valor);
                     datos.put("imagenUrl", imageUrl);
 
                     if (fechaVencimiento != null) {
                         datos.put("fechaVencimiento", fechaVencimiento);
                     }
 
-
-                    negocioNombreTextView.setText(negocio);
-
-                    btnAgregarProducto.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String idNegocio = negocio.toLowerCase();
-                            String producto = nombreProducto.getText().toString().trim().toLowerCase();
-                            String cdBarras = cdBarrasProducto.getText().toString().trim().toLowerCase();
-                            String cantidad = cantidadProducto.getText().toString().trim().toLowerCase();
-                            String valor = valorProducto.getText().toString().trim().toLowerCase();
-
-                            int cantidadInt = Integer.parseInt(cantidad);
-                            int valorInt = Integer.parseInt(valor);
-
-                            if (producto.isEmpty()) {
-                                showMessage("Por favor, completa todos los campos.");
-                            } else {
-                                // Crear una nueva instancia de Productos
-                                Productos nuevoProducto = new Productos(idNegocio, cantidadInt, cdBarras, producto, valorInt, fechaVencimiento, imageUrl);
-
-                                db.collection("productos")
-                                        .add(datos)
-                                        .addOnSuccessListener(documentReference -> {
-                                            showMessage("Producto agregado con éxito.");
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            showMessage("Error al agregar el producto: " + e.getMessage());
-                                        });
-
-                                db.collection("productos")
-                                        .add(nuevoProducto)
-                                        .addOnSuccessListener(documentReference -> {
-                                            showMessage("Producto agregado con éxito.");
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            showMessage("Error al agregar el producto: " + e.getMessage());
-                                        });
-                            }
-                        }
-                    });
+                    // Guardar en Firebase
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("productos")
+                            .add(datos)
+                            .addOnSuccessListener(documentReference -> showMessage("Producto agregado con éxito."))
+                            .addOnFailureListener(e -> showMessage("Error al agregar el producto: " + e.getMessage()));
                 });
             });
         }
