@@ -110,6 +110,7 @@ public class Pag_Principal extends AppCompatActivity {
             public void onClick(View view) {
                 // Crea un Intent para abrir Pagina Cliente
                 Intent intent = new Intent(Pag_Principal.this, inventario.class);
+                intent.putExtra("negocio", negocio);
                 startActivity(intent);
             }
         });

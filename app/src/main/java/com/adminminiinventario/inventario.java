@@ -1,9 +1,10 @@
 package com.adminminiinventario;
-
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,38 +19,36 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 public class inventario extends AppCompatActivity {
+
     private FirebaseFirestore db;
     private RecyclerView recyclerView;
     private InventarioAdapter adapter;
     private List<Producto> productList = new ArrayList<>();
     private FirebaseAuth mAuth;
     private ListenerRegistration userDataListener;
+    private String negocio;
 
-    private List<String> elementosDelInventario = new ArrayList<>();
-
+    private String titulotext = "Informe inventario";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseApp.initializeApp(this); // Asegúrate de que estás inicializando Firebase adecuadamente
+        FirebaseApp.initializeApp(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventario);
 
-        // Inicializa la lista de elementos del inventario
-        List<String> elementosDelInventario = new ArrayList<>();
-
-        // Agregar elementos al inventario
-        elementosDelInventario.add("Elemento 1");
-        elementosDelInventario.add("Elemento 2");
-        // ...
-
+        negocio = getIntent().getStringExtra("negocio");
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -64,11 +63,10 @@ public class inventario extends AppCompatActivity {
         botonGenerarInforme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Llama a la función para generar el informe PDF aquí
-                generarInformePDF();
+                // Llama a la función para obtener productos y generar el informe PDF
+                obtenerProductosYGenerarInforme();
             }
         });
-
 
         if (currentUser != null) {
             String uid = currentUser.getUid();
@@ -83,73 +81,112 @@ public class inventario extends AppCompatActivity {
         }
     }
 
+    // Método para obtener los productos del negocio
     private void obtenerProductosDelNegocio(String negocio) {
-        Log.d("MiApp", "Productos obtenidos: " + productList.size());
-        db.collection("productos")
-                .whereEqualTo("id_negocio", negocio.toLowerCase())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        productList.clear(); // Limpia la lista antes de agregar nuevos productos
+        if (negocio != null) {
+            db.collection("productos")
+                    .whereEqualTo("id_negocio", negocio.toLowerCase())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            productList.clear();
 
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String nombre_producto = document.getString("producto");
-                            Double precio = document.getDouble("valor");
-                            Timestamp fechaVencimientoTimestamp = document.getTimestamp("fechaVencimiento");
-                            String imagenURL = document.getString("imagenUrl"); // Obtiene la URL de la imagen
-                            String codigo_barra = document.getString("cdBarras");
-
-                            if (nombre_producto != null && precio != null) {
-                                // Verifica si hay fecha de vencimiento
-                                Date fechaVencimientoDate = null;
-                                if (fechaVencimientoTimestamp != null) {
-                                    fechaVencimientoDate = fechaVencimientoTimestamp.toDate();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Producto producto = documentToProducto(document);
+                                if (producto != null) {
+                                    productList.add(producto);
                                 }
-
-                                Producto producto = new Producto(nombre_producto, precio, fechaVencimientoDate, imagenURL, codigo_barra);
-                                productList.add(producto);
                             }
+
+                            adapter.notifyDataSetChanged();
+
+                            // Después de obtener los productos, genera el informe PDF
+                            generarInformePDF(productList);
                         }
-
-                        // Notifica al adaptador que los datos han cambiado
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                    });
+        } else {
+            Log.e("InventarioActivity", "El negocio es nulo");
+        }
     }
 
+    // Método para convertir un documento Firestore a un objeto Producto
+    private Producto documentToProducto(QueryDocumentSnapshot document) {
+        try {
+            String idNegocio = document.getString("id_negocio");
+            int cantidad = document.getLong("cantidad").intValue();
+            String codigo_barra = String.valueOf(document.getLong("cdBarra"));
+            String nombreProducto = document.getString("producto");
+            double valor = document.getDouble("valor");
+            Timestamp fechaVencimientoTimestamp = document.getTimestamp("fechaVencimiento");
+            String imagenURL = document.getString("imagenUrl");
 
-    public void generarInformePDF() {
-        // Ruta de la carpeta de destino en el almacenamiento interno de la aplicación
-        File directory = getFilesDir();
-        String directorioDestino = directory.getAbsolutePath();
-
-        // Verificar si el directorio existe
-        File directorio = new File(directorioDestino);
-        if (!directorio.exists()) {
-            if (directorio.mkdirs()) {
-                System.out.println("Directorio creado correctamente.");
-            } else {
-                System.out.println("No se pudo crear el directorio.");
-                return;  // Si no se pudo crear el directorio, no generamos el PDF
+            Date fechaVencimientoDate = null;
+            if (fechaVencimientoTimestamp != null) {
+                fechaVencimientoDate = fechaVencimientoTimestamp.toDate();
             }
+
+            Producto producto = new Producto(cantidad, idNegocio, nombreProducto, valor, fechaVencimientoDate, imagenURL, codigo_barra);
+            producto.setValor(cantidad);
+
+            return producto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        // Continúa con la generación del PDF
-        String filePath = new File(directorio, "informe.pdf").getAbsolutePath();
-
-        // Convierte la lista de elementos en una cadena para incluirla en el PDF
-        String contenido = convertirListaAString(elementosDelInventario);
-
-        Generar_Informe generadorPDF = new Generar_Informe();
-        generadorPDF.createPDF(filePath, contenido);
     }
 
-    private String convertirListaAString(List<String> lista) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String elemento : lista) {
-            stringBuilder.append(elemento).append("\n"); // Agrega cada elemento en una nueva línea
+    // Método para obtener productos y generar el informe PDF
+    private void obtenerProductosYGenerarInforme() {
+        obtenerProductosDelNegocio(negocio);
+    }
+
+    // Método para generar el informe PDF
+    private void generarInformePDF(List<Producto> productos) {
+        // Obtener el directorio específico de la aplicación en el almacenamiento externo
+        File directory = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "informe");
+
+        // Verificar si el directorio existe, si no, intentar crearlo
+        if (!directory.exists() && !directory.mkdirs()) {
+            Log.e("InventarioActivity", "No se pudo crear el directorio.");
+            return;
         }
-        return stringBuilder.toString();
+
+        // Cambiar el nombre del archivo y obtener la ruta completa del archivo PDF
+        String filePath = new File(directory, "informe.pdf").getAbsolutePath();
+
+        try {
+            // Crear un archivo PDF y un documento
+            PdfDocument pdfDoc = new PdfDocument(new PdfWriter(filePath));
+            Document doc = new Document(pdfDoc);
+
+            // Agregar título al PDF
+            Paragraph titulo = new Paragraph(titulotext);
+            doc.add(titulo);
+
+            // Agregar elementos al PDF
+            for (Producto producto : productos) {
+                Paragraph para = new Paragraph(producto.getNombre_producto() +
+                        " | " + producto.getFechaVencimiento() +
+                        " | " + producto.getCantidad() +
+                        " | " + "$" + producto.getValor() +
+                        "\n");
+                doc.add(para);
+            }
+
+            // Cerrar el documento
+            doc.close();
+
+            // Mostrar un mensaje de éxito
+            showToast("Informe PDF creado en: " + filePath);
+            Log.v("InventarioActivity", filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // Método para mostrar mensajes en un Toast
+    private void showToast(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
     }
 }
-
