@@ -3,6 +3,8 @@ package com.adminminiinventario.adapter;
 import java.util.Date;
 
 public class Producto {
+    private int cantidad;
+    private String id_negocio;
     private String nombre_producto;
     private double valor;
     private Date fechaVencimiento; // Fecha de vencimiento como objeto Date
@@ -17,7 +19,9 @@ public class Producto {
         this.codigo_barra = codigo_barra;
     }
 
-    public Producto(String nombre_producto, double valor, Date fechaVencimiento, String imagenURL, String codigo_barra) {
+    public Producto(int cantidad, String id_negocio,String nombre_producto, double valor, Date fechaVencimiento, String imagenURL, String codigo_barra) {
+        this.cantidad = cantidad;
+        this.id_negocio = id_negocio;
         this.nombre_producto = nombre_producto;
         this.valor = valor;
         this.fechaVencimiento = fechaVencimiento;
@@ -26,6 +30,13 @@ public class Producto {
     }
 
     // Getters y setters para nombreProducto, precio y fechaVencimiento
+    public String getId_negocio() {
+        return id_negocio;
+    }
+
+    public void setId_negocio(String id_negocio) {
+        this.id_negocio = id_negocio;
+    }
 
     public String getNombre_producto() {
         return nombre_producto;
@@ -33,6 +44,13 @@ public class Producto {
 
     public void setNombre_producto(String nombre_producto) {
         this.nombre_producto = nombre_producto;
+    }
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 
     public double getValor() {
