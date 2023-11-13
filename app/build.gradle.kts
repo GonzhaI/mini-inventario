@@ -44,6 +44,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.1.0")
     implementation("androidx.cardview:cardview:1.0.0")
 
+    implementation("com.itextpdf:itext7-core:7.1.15")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
