@@ -41,7 +41,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-storage:20.0.0")
     implementation ("com.squareup.picasso:picasso:2.5.2")
 
-    implementation("androidx.recyclerview:recyclerview:1.1.0")
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.cardview:cardview:1.0.0")
 
     implementation("com.itextpdf:itext7-core:7.1.15")
@@ -64,8 +64,6 @@ dependencies {
 
     implementation ("com.squareup.picasso:picasso:2.71828")
 
-
-
-
-
+    // Ganancias
+    implementation("com.github.alcarazolabs:FastTableLayout:1.0.0")
 }

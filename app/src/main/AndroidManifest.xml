@@ -41,6 +41,9 @@
                 android:resource="@xml/filepaths" />
         </provider>
         <activity
+            android:name=".ActivityGraficaGanancias"
+            android:exported="true" />
+        <activity
             android:name=".ActivityAlimentosVencidos"
             android:exported="false" />
         <activity
