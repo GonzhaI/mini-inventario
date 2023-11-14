@@ -11,8 +11,8 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="426dp"
-        android:layout_height="507dp"
+        android:layout_width="421dp"
+        android:layout_height="555dp"
         android:background="@drawable/redondeo_pantprin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="1.0" />
+
 
     <TextView
         android:id="@+id/negocioNombre"
@@ -31,13 +32,15 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="342dp"
         android:layout_height="53dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="88dp"
         android:fontFamily="@font/ibm_plex_serif_thin"
         android:text="Grafica Ganancias"
         android:textAlignment="center"
@@ -46,7 +49,7 @@
         android:textSize="35dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,24 +59,31 @@
         android:layout_height="wrap_content"
         android:text="Ganancias Diarias"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/tablaGanancias"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.888" />
+        app:layout_constraintVertical_bias="0.858" />
 
-
-    <TableLayout
-        android:id="@+id/tablaGanancias"
-        android:layout_width="300dp"
-        android:layout_height="340dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ScrollView
+        android:id="@+id/linearLayout"
+        android:layout_width="303dp"
+        android:layout_height="288dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.806" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.536">
+
+        <TableLayout
+            android:id="@+id/tablaGanancias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
     <EditText
         android:id="@+id/editTextGananciaDiaria"
@@ -82,10 +92,10 @@
         android:hint="Ingrese Ganancia"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.207"
+        app:layout_constraintHorizontal_bias="0.243"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tablaGanancias"
-        app:layout_constraintVertical_bias="0.505" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.18" />
 
     <Button
         android:id="@+id/botonGuardarGanancia"
@@ -93,13 +103,28 @@
         android:layout_height="51dp"
         android:backgroundTint="#EB5E28"
         android:text="Aceptar"
+        android:textAlignment="center"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.378"
+        app:layout_constraintHorizontal_bias="0.131"
         app:layout_constraintStart_toEndOf="@+id/editTextGananciaDiaria"
-        app:layout_constraintTop_toBottomOf="@+id/tablaGanancias"
-        app:layout_constraintVertical_bias="0.528" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.168" />
+
+    <TextView
+        android:id="@+id/textViewGananciasTotales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ganancias del Mes"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.785" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
