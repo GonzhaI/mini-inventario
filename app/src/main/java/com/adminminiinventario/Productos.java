@@ -7,7 +7,7 @@ public class Productos {
     private String id_negocio;
 
     private int cantidad;
-    private String cdBarra;
+    private String cdBarras;
     private String producto;
     private int valor;
     private String imagenUrl;
@@ -16,11 +16,11 @@ public class Productos {
     public Productos() {
     }
 
-    public Productos(String id_negocio, int cantidad, String cdBarra, String producto, int valor, Timestamp fechaVencimiento, String imagenUrl) {
+    public Productos(String id_negocio, int cantidad, String cdBarras, String producto, int valor, Timestamp fechaVencimiento, String imagenUrl) {
         this.imagenUrl = imagenUrl;
         this.id_negocio = id_negocio;
         this.cantidad = cantidad;
-        this.cdBarra = cdBarra;
+        this.cdBarras = cdBarras;
         this.producto = producto;
         this.valor = valor;
         this.fechaVencimiento = fechaVencimiento;
@@ -49,12 +49,12 @@ public class Productos {
         this.cantidad = cantidad;
     }
 
-    public String getCdBarra() {
-        return cdBarra;
+    public String getCdBarras() {
+        return cdBarras;
     }
 
-    public void setCdBarra(String cdBarra) {
-        this.cdBarra = cdBarra;
+    public void setCdBarras(String cdBarras) {
+        this.cdBarras = cdBarras;
     }
 
     public String getProducto() {
