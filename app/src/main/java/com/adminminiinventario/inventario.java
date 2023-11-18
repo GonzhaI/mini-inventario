@@ -250,4 +250,5 @@ public class inventario extends AppCompatActivity {
     private void showToast(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
     }
+
 }
