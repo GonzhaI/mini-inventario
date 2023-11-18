@@ -34,6 +34,10 @@ public class ProductosAdapter extends RecyclerView.Adapter<ProductosAdapter.Prod
         holder.txtProductDescription.setText("Cantidad: " + producto.getCantidad());
         holder.txtProductBarcode.setText("Código de barras: " + producto.getCdBarras());
         holder.txtProductPrice.setText("Valor: $" + producto.getValor());
+
+
+
+        
     }
 
     @Override

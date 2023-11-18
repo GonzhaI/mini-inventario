@@ -59,6 +59,9 @@
             android:name=".inventario"
             android:exported="false" />
         <activity
+            android:name=".ActivityEditar_productos"
+            android:exported="false"/>
+        <activity
             android:name=".ActivityCalendario"
             android:exported="false" />
         <activity

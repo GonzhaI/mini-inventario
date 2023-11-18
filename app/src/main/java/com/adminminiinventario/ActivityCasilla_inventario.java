@@ -1,9 +1,8 @@
 package com.adminminiinventario;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,13 +15,13 @@ public class ActivityCasilla_inventario extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
    super.onCreate(savedInstanceState);
-   setContentView(R.layout.activity_inventario);
+   setContentView(R.layout.casilla_inventario);
 
    };
 
     public void irEditar(View view) {
         // Crear un Intent para ir a la otra actividad
-        Intent intent = new Intent(ActivityCasilla_inventario.this, ActivityEditar_productos.class);
+        Intent intent = new Intent(this, ActivityEditar_productos.class);
         startActivity(intent);
     }
 

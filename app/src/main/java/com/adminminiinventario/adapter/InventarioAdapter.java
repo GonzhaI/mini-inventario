@@ -1,16 +1,18 @@
 package com.adminminiinventario.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.adminminiinventario.ActivityEditar_productos;
 import com.adminminiinventario.R;
 import com.squareup.picasso.Picasso;
 
@@ -68,7 +70,12 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         } else {
             holder.codigo_barra.setText("Codigo no disponible");
         }
+
+
     }
+
+
+
 
     private String formatDouble(double value) {
         DecimalFormat df = new DecimalFormat("$#.###"); // Define el formato deseado
@@ -85,7 +92,7 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
     }
 
     public class InventarioViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout casilla_productos; // Utiliza el ID del RelativeLayout en tu casilla personalizada
+        CardView cardView;; // Utiliza el ID del RelativeLayout en tu casilla personalizada
         TextView nombre_producto;
         TextView valor;
         TextView fechaVencimiento;
@@ -95,11 +102,23 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
 
         public InventarioViewHolder(View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.yay);
             nombre_producto = itemView.findViewById(R.id.nombre_producto);
             valor = itemView.findViewById(R.id.precio);
             fechaVencimiento = itemView.findViewById(R.id.fecha_vencimiento);
             imagen_producto = itemView.findViewById(R.id.imagen_producto); // Asegúrate de que esta línea esté presente
             codigo_barra = itemView.findViewById(R.id.producto_id);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Manejar el clic en el CardView, por ejemplo, iniciar un nuevo Activity
+                    Intent intent = new Intent(context, ActivityEditar_productos.class);
+                    // Puedes pasar datos adicionales al nuevo Activity si es necesario
+                    context.startActivity(intent);
+                }
+            });
         }
+
     }
 }
