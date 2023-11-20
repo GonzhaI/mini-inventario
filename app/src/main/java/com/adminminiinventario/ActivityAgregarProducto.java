@@ -1,25 +1,13 @@
 package com.adminminiinventario;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-
-
-import android.app.AppOpsManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
-
 import android.app.DatePickerDialog;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,56 +17,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentReference;
-import com.adminminiinventario.Productos;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-
-import java.io.ByteArrayOutputStream;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.HashMap;
-import java.util.Map;
-
-
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -178,6 +128,12 @@ public class ActivityAgregarProducto extends AppCompatActivity {
         dpd.show();
     }
 
+    private Bitmap obtenerImagenPredeterminada() {
+        Drawable drawable = getResources().getDrawable(R.drawable.imagen_predeterminada);
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        return bitmapDrawable.getBitmap();
+    }
+
     private void agregarProductoAFirebase() {
         // Obtener los valores de los campos
         String producto = nombreProducto.getText().toString().trim();
@@ -194,7 +150,16 @@ public class ActivityAgregarProducto extends AppCompatActivity {
             int valor = Integer.parseInt(valorStr);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+            if (imageBitmap != null) {
+                // Si imageBitmap no es nulo, lo comprimimos
+                imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            } else {
+                // Si imageBitmap es nulo, obtenemos la imagen predeterminada y la comprimimos
+                Bitmap imagenPredeterminada = obtenerImagenPredeterminada();
+                imagenPredeterminada.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            }
+
             byte[] data = baos.toByteArray();
 
             StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("imagenes_productos").child(cdBarras + ".jpg");

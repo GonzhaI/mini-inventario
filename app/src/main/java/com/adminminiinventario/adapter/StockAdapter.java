@@ -14,17 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.adminminiinventario.R;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 
-public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.InventarioViewHolder> {
+public class StockAdapter extends RecyclerView.Adapter<StockAdapter.InventarioViewHolder> {
 
     private List<Producto> productList;
     private Context context;
 
-    public InventarioAdapter(Context context, List<Producto> productList) {
+    public StockAdapter(Context context, List<Producto> productList) {
         this.context = context;
         this.productList = productList;
     }
@@ -32,7 +31,7 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
     @NonNull
     @Override
     public InventarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.casilla_inventario, parent, false); // Utiliza el diseño de casilla personalizada
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_casilla_stock, parent, false); // Utiliza el diseño de casilla personalizada
         return new InventarioViewHolder(view);
     }
 
@@ -41,8 +40,9 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         Producto producto = productList.get(position);
 
         holder.nombre_producto.setText(producto.getNombre_producto());
-        String valorFormateado = formatDouble(producto.getValor());
-        holder.valor.setText(valorFormateado);
+        // Formatear la cantidad en el formato "Cant: 00"
+        String cantidadFormateada = String.format("Cant: %02d", producto.getCantidad());
+        holder.Cantidad.setText(cantidadFormateada);
 
         // Cargar y mostrar la imagen utilizando Picasso
         if (producto.getImagenURL() != null && !producto.getImagenURL().isEmpty()) {
@@ -63,17 +63,11 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         }
 
         String codigoBarras = producto.getCodigo_barra();
-        if (codigoBarras != null || !codigoBarras.isEmpty()) {
+        if (codigoBarras != null && !codigoBarras.isEmpty()) {
             holder.codigo_barra.setText(codigoBarras);
         } else {
             holder.codigo_barra.setText("Codigo no disponible");
         }
-    }
-
-    private String formatDouble(double value) {
-        DecimalFormat df = new DecimalFormat("$#.###"); // Define el formato deseado
-        String formattedValue = df.format(value);
-        return formattedValue;
     }
 
 
@@ -87,7 +81,7 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
     public class InventarioViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout casilla_productos; // Utiliza el ID del RelativeLayout en tu casilla personalizada
         TextView nombre_producto;
-        TextView valor;
+        TextView Cantidad;
         TextView fechaVencimiento;
         ImageView imagen_producto;
 
@@ -95,11 +89,11 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
 
         public InventarioViewHolder(View itemView) {
             super(itemView);
-            nombre_producto = itemView.findViewById(R.id.nombre_producto);
-            valor = itemView.findViewById(R.id.precio);
-            fechaVencimiento = itemView.findViewById(R.id.fecha_vencimiento);
-            imagen_producto = itemView.findViewById(R.id.imagen_producto); // Asegúrate de que esta línea esté presente
-            codigo_barra = itemView.findViewById(R.id.producto_id);
+            nombre_producto = itemView.findViewById(R.id.nombre_producto_stock);
+            Cantidad = itemView.findViewById(R.id.cantidad_stock);
+            fechaVencimiento = itemView.findViewById(R.id.fecha_vencimiento_stock);
+            imagen_producto = itemView.findViewById(R.id.imagen_producto_stock); // Asegúrate de que esta línea esté presente
+            codigo_barra = itemView.findViewById(R.id.producto_id_stock);
         }
     }
 }

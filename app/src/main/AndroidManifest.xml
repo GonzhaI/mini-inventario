@@ -6,6 +6,7 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -55,6 +56,9 @@
         <activity
             android:name=".ActivityIngresoCliente"
             android:exported="false" />
+        <activity
+            android:name=".Notificaciones"
+            android:exported="false"/>
         <activity
             android:name=".ActivityGestorCompradores"
             android:exported="false" />
