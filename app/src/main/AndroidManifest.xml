@@ -43,7 +43,7 @@
         </provider>
         <activity
             android:name=".ActivityGraficaGanancias"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ActivityAlimentosVencidos"
             android:exported="false" />
