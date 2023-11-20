@@ -84,6 +84,7 @@
                 android:layout_toStartOf="@+id/wa"
                 android:orientation="vertical">
 
+
                 <TextView
                     android:id="@+id/precio"
                     android:layout_width="139dp"
@@ -97,8 +98,14 @@
                     android:textSize="35dp" />
 
 
+
             </LinearLayout>
+
+
+
+
         </RelativeLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

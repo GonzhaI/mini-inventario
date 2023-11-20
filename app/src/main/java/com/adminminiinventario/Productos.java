@@ -80,5 +80,17 @@ public class Productos {
     public void setfechaVencimiento(Timestamp fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
     }
+
+    public void modificarValor(int nuevoValor) {
+        this.valor = nuevoValor;
+    }
+
+    public void modificarfechaVencimiento(Timestamp nuevaFechaVencimiento) {
+        this.fechaVencimiento = nuevaFechaVencimiento;
+    }
+
+    public void modificarCantidad(int nuevaCantidad) {
+        this.cantidad = nuevaCantidad;
+    }
 }
 

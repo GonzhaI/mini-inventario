@@ -1,23 +1,24 @@
 package com.adminminiinventario.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.adminminiinventario.ActivityEditar_productos;
 import com.adminminiinventario.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 
 public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.InventarioViewHolder> {
 
@@ -32,7 +33,7 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
     @NonNull
     @Override
     public InventarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.casilla_inventario, parent, false); // Utiliza el diseño de casilla personalizada
+        View view = LayoutInflater.from(context).inflate(R.layout.casilla_inventario, parent, false);
         return new InventarioViewHolder(view);
     }
 
@@ -44,14 +45,10 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         String valorFormateado = formatDouble(producto.getValor());
         holder.valor.setText(valorFormateado);
 
-        // Cargar y mostrar la imagen utilizando Picasso
         if (producto.getImagenURL() != null && !producto.getImagenURL().isEmpty()) {
-            Picasso.get()
-                    .load(producto.getImagenURL())
-                    .into(holder.imagen_producto);
+            Picasso.get().load(producto.getImagenURL()).into(holder.imagen_producto);
         } else {
-            // Si no hay URL de imagen, puedes mostrar una imagen predeterminada o dejarlo vacío
-            holder.imagen_producto.setImageResource(R.drawable.imagen_predeterminada); // Reemplaza con tu propia imagen predeterminada
+            holder.imagen_producto.setImageResource(R.drawable.imagen_predeterminada);
         }
 
         if (producto.getFechaVencimiento() != null) {
@@ -68,16 +65,24 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         } else {
             holder.codigo_barra.setText("Codigo no disponible");
         }
+
+        // Modificado para incluir la lógica de clic en el CardView
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Prepara los datos a enviar a la actividad de edición
+                Intent intent = new Intent(context, ActivityEditar_productos.class);
+                intent.putExtra("productos", producto);
+                // Puedes agregar más datos según sea necesario
+                context.startActivity(intent);
+            }
+        });
     }
 
     private String formatDouble(double value) {
-        DecimalFormat df = new DecimalFormat("$#.###"); // Define el formato deseado
-        String formattedValue = df.format(value);
-        return formattedValue;
+        DecimalFormat df = new DecimalFormat("$#.###");
+        return df.format(value);
     }
-
-
-
 
     @Override
     public int getItemCount() {
@@ -85,20 +90,20 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
     }
 
     public class InventarioViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout casilla_productos; // Utiliza el ID del RelativeLayout en tu casilla personalizada
+        CardView cardView;
         TextView nombre_producto;
         TextView valor;
         TextView fechaVencimiento;
         ImageView imagen_producto;
-
         TextView codigo_barra;
 
         public InventarioViewHolder(View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.yay);
             nombre_producto = itemView.findViewById(R.id.nombre_producto);
             valor = itemView.findViewById(R.id.precio);
             fechaVencimiento = itemView.findViewById(R.id.fecha_vencimiento);
-            imagen_producto = itemView.findViewById(R.id.imagen_producto); // Asegúrate de que esta línea esté presente
+            imagen_producto = itemView.findViewById(R.id.imagen_producto);
             codigo_barra = itemView.findViewById(R.id.producto_id);
         }
     }

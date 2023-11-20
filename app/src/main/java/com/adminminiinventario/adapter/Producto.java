@@ -1,8 +1,9 @@
 package com.adminminiinventario.adapter;
 
 import java.util.Date;
+import java.io.Serializable;
 
-public class Producto {
+public class Producto implements Serializable {
     private int cantidad;
     private String id_negocio;
     private String nombre_producto;
