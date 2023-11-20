@@ -131,7 +131,7 @@ public class inventario extends AppCompatActivity {
         try {
             String idNegocio = document.getString("id_negocio");
             int cantidad = document.getLong("cantidad").intValue();
-            String codigo_barra = String.valueOf(document.getLong("cdBarra"));
+            String codigo_barra = document.getString("cdBarras");
             String nombreProducto = document.getString("producto");
             double valor = document.getDouble("valor");
             Timestamp fechaVencimientoTimestamp = document.getTimestamp("fechaVencimiento");
@@ -143,7 +143,6 @@ public class inventario extends AppCompatActivity {
             }
 
             Producto producto = new Producto(cantidad, idNegocio, nombreProducto, valor, fechaVencimientoDate, imagenURL, codigo_barra);
-            producto.setValor(cantidad);
 
             return producto;
         } catch (Exception e) {

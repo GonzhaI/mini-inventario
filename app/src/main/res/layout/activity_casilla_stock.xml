@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/yay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        android:background="#48A9A6"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/casilla_por_defecto_stock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <ImageView
+                android:id="@+id/imagen_producto_stock"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="14dp"
+                android:paddingLeft="14dp"
+                app:srcCompat="@drawable/imagen_predeterminada" />
+
+            <LinearLayout
+                android:id="@+id/wa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="1dp"
+                android:layout_toEndOf="@+id/imagen_producto_stock"
+                android:layout_toRightOf="@+id/imagen_producto_stock"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nombre_producto_stock"
+                    android:layout_width="164dp"
+                    android:layout_height="54dp"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="Nombre Producto"
+                    android:textColor="@color/white"
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/fecha_vencimiento_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="Fecha de vencimiento" />
+
+                <TextView
+                    android:id="@+id/producto_id_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0000000000"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lugar_precio_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="1dp"
+                android:layout_toStartOf="@+id/wa"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cantidad_stock"
+                    android:layout_width="139dp"
+                    android:layout_height="69dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="0"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/white"
+                    android:textSize="30dp" />
+
+
+                <LinearLayout
+                    android:id="@+id/stock"
+                    android:layout_width="120dp"
+                    android:layout_height="37dp"
+                    android:orientation="vertical"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="1dp">
+
+                    <TextView
+                        android:id="@+id/Rellenar_Stock"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="Rellenar Stock"
+                        android:textColor="#FF5722"
+                        android:textSize="18dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

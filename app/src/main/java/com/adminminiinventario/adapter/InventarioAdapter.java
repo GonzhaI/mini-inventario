@@ -60,7 +60,7 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         }
 
         String codigoBarras = producto.getCodigo_barra();
-        if (codigoBarras != null && !codigoBarras.isEmpty()) {
+        if (codigoBarras != null || !codigoBarras.isEmpty()) {
             holder.codigo_barra.setText(codigoBarras);
         } else {
             holder.codigo_barra.setText("Codigo no disponible");

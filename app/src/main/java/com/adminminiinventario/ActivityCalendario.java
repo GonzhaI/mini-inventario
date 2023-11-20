@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,14 +30,17 @@ import androidx.annotation.NonNull;
 public class ActivityCalendario extends AppCompatActivity {
     TextView tv;
     Button botonFechaP;
-    private Timestamp fechaTimestamp; // Cambio aquí
 
+    EditText nombreDistribuidor;
+
+    private Timestamp fechaTimestamp;
     private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendario);
+        nombreDistribuidor = findViewById(R.id.nombreDistribuidor);
         tv = findViewById(R.id.fecha);
         botonFechaP = findViewById(R.id.botonFecha);
         db = FirebaseFirestore.getInstance();
@@ -48,51 +52,46 @@ public class ActivityCalendario extends AppCompatActivity {
         int mes = cal.get(Calendar.MONTH);
         int dia = cal.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dpd = new DatePickerDialog(ActivityCalendario.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                // Crea un Timestamp con la fecha seleccionada
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                fechaTimestamp = new Timestamp(calendar.getTime());
+        DatePickerDialog dpd = new DatePickerDialog(ActivityCalendario.this, (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            fechaTimestamp = new Timestamp(calendar.getTime());
 
-                // Actualiza el TextView con la fecha formateada
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                String fechaFormateada = sdf.format(calendar.getTime());
-                tv.setText(fechaFormateada);
-            }
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String fechaFormateada = sdf.format(calendar.getTime());
+            tv.setText(fechaFormateada);
         }, anio, mes, dia);
         dpd.show();
     }
 
     public void MostrarMensaje(View view) {
         if (fechaTimestamp != null) {
-            // Aquí, enviamos el Timestamp a Firebase Firestore
-            Map<String, Object> datos = new HashMap<>();
-            datos.put("Fecha", fechaTimestamp);
+            // Obtener la ID del negocio
+            String idNegocio = getIntent().getStringExtra("negocio");
 
-            // "fechaPrueba" es el nombre de tu colección en Firestore
-            db.collection("fechaPrueba").add(datos)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            // Manejar el éxito
-                            Toast.makeText(ActivityCalendario.this, "Fecha guardada correctamente!", Toast.LENGTH_SHORT).show();
-                        }
+            // Obtener el nombre del distribuidor
+            String nombreDistribuidorStr = nombreDistribuidor.getText().toString().trim();
+
+            if (nombreDistribuidorStr.isEmpty()) {
+                Toast.makeText(this, "Por favor, ingresa el nombre del distribuidor", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Crear un objeto Distribuidor
+            Distribuidor distribuidor = new Distribuidor(idNegocio, nombreDistribuidorStr, fechaTimestamp);
+
+            // Agregar el distribuidor a Firebase
+            db.collection("llegadaMercaderia")
+                    .add(distribuidor)
+                    .addOnSuccessListener(documentReference -> {
+                        Toast.makeText(ActivityCalendario.this, "Distribuidor agregado con éxito", Toast.LENGTH_SHORT).show();
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Manejar el fallo
-                            Toast.makeText(ActivityCalendario.this, "Error al guardar la fecha", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(ActivityCalendario.this, "Error al agregar el distribuidor: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(this, "No se ha seleccionado una fecha", Toast.LENGTH_SHORT).show();
         }
     }
 }
-
 
 
 
