@@ -29,6 +29,9 @@ public class Producto implements Serializable {
         this.imagenURL = imagenURL;
         this.codigo_barra = codigo_barra;
     }
+    public Producto() {
+        // Constructor vacío necesario para Firebase
+    }
 
     // Getters y setters para nombreProducto, precio y fechaVencimiento
     public String getId_negocio() {

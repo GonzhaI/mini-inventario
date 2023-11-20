@@ -178,30 +178,53 @@ public class ActivityEditar_productos extends AppCompatActivity {
         int nuevaCantidad = Integer.parseInt(cantidadTextView.getText().toString().trim());
         double nuevoValor = Double.parseDouble(valorTextView.getText().toString().trim());
         Timestamp nuevaFechaVencimiento = parseFechaVencimiento(fechaVencimientoTextView.getText().toString().trim());
-        // Asegúrate de obtener la URL de la imagen de donde sea que la tengas almacenada
+
+        // Verifica que el nombre del producto y el id_negocio coincidan
+        String idNegocio = nombreUsuario.getText().toString().toLowerCase();
+        if (idNegocio.isEmpty()) {
+            showMessage("Error: no se pudo obtener el id_negocio del usuario");
+            return;
+        }
+
+        Log.d("ActualizarProducto", "ID Negocio: " + idNegocio);
+        Log.d("ActualizarProducto", "Código de Barras a actualizar: " + nuevoCodigoBarras);
 
         // Crea un Map con los nuevos datos
         Map<String, Object> nuevosDatos = new HashMap<>();
-        nuevosDatos.put("nombre_producto", nuevoNombre);
-        nuevosDatos.put("codigo_barra", nuevoCodigoBarras);
+        nuevosDatos.put("producto", nuevoNombre);
+        nuevosDatos.put("cdBarras", nuevoCodigoBarras);
         nuevosDatos.put("cantidad", nuevaCantidad);
         nuevosDatos.put("valor", nuevoValor);
         nuevosDatos.put("fechaVencimiento", nuevaFechaVencimiento);
-        // Agrega la lógica para obtener la URL de la imagen
 
-        // Accede a la instancia de FirebaseFirestore y actualiza el documento
+        // Accede a la instancia de FirebaseFirestore y actualiza el primer documento encontrado
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("productos").document(codigoBarrasProducto)
-                .update(nuevosDatos)
-                .addOnSuccessListener(aVoid -> {
-                    // Éxito al actualizar
-                    // Puedes mostrar un mensaje o realizar otras acciones si es necesario
-                    showMessage("Producto actualizado con éxito");
-                })
-                .addOnFailureListener(e -> {
-                    // Error al actualizar
-                    // Puedes mostrar un mensaje o realizar otras acciones si es necesario
-                    showMessage("Error al actualizar el producto: " + e.getMessage());
+        db.collection("productos")
+                .whereEqualTo("id_negocio", idNegocio)
+                .whereEqualTo("cdBarras", codigoBarrasProducto)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // Obtiene el primer documento
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        Log.d("ActualizarProducto", "ID Documento: " + document.getId());
+
+                        // Actualiza el documento con los nuevos datos
+                        db.collection("productos").document(document.getId())
+                                .update(nuevosDatos)
+                                .addOnSuccessListener(aVoid -> {
+                                    // Éxito al actualizar
+                                    // Puedes mostrar un mensaje o realizar otras acciones si es necesario
+                                    showMessage("Producto actualizado con éxito");
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Error al actualizar
+                                    // Puedes mostrar un mensaje o realizar otras acciones si es necesario
+                                    showMessage("Error al actualizar el producto: " + e.getMessage());
+                                });
+                    } else {
+                        showMessage("Error al obtener el producto a actualizar: " + task.getException());
+                    }
                 });
     }
 
