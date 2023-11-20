@@ -22,6 +22,8 @@
         android:id="@+id/botonGenerarInforme"
         android:layout_width="199dp"
         android:layout_height="66dp"
+        android:textColor="@color/white"
+        android:backgroundTint="#EB5E28"
         android:layout_marginStart="196dp"
         android:layout_marginBottom="24dp"
         android:text="Generar Informe"
