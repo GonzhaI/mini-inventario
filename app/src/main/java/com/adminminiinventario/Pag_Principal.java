@@ -114,6 +114,16 @@ public class Pag_Principal extends AppCompatActivity {
             }
         });
 
+        ImageButton bt_ganancias = findViewById(R.id.imageButtonGanancias);
+        bt_ganancias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir la Tabla de Ganancias
+                Intent intent = new Intent(Pag_Principal.this, ActivityGraficaGanancias.class);
+                startActivity(intent);
+            }
+        });
+
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.search);
 
