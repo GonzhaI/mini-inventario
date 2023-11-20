@@ -1,16 +1,23 @@
 package com.adminminiinventario;
 
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,14 +30,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ActivityLogin extends AppCompatActivity {
     EditText passLogin, userLogin;
     Button bt_login;
     FirebaseFirestore db;
     FirebaseAuth auth;
+
+    private PendingIntent pendingIntent;
+    private final static String CHANNEL_ID = "NOTIFICACION";
+    private final static int NOTIFICACION_ID = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,16 +60,56 @@ public class ActivityLogin extends AppCompatActivity {
                 if (correo.isEmpty() || contrasena.isEmpty()) {
                     showMessage("Por favor, completa todos los campos.");
 
-                }else {
+                } else {
 
                     login(correo, contrasena);
 
-
                 }
+
             }
         });
 
     }
+
+    private void createNotificationChannel() {
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                "NEW", NotificationManager. IMPORTANCE_DEFAULT);
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.createNotificationChannel(channel);
+        createNotification();
+    }
+
+    private void createNotification() {
+        setPendingIntent(Notificaciones.class);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(),
+                CHANNEL_ID)
+                .setSmallIcon(R.drawable.imagen_predeterminada)
+                .setContentTitle("Stock")
+                .setContentText("Recuerda revisar tu Stock")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        managerCompat.notify(1, builder.build());
+    }
+
+    private void setPendingIntent(Class<?> clsActivity){
+        Intent intent = new Intent(this, clsActivity);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(clsActivity);
+        stackBuilder.addNextIntent(intent);
+        pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
 
 
      private void login(String correo, String contrasena){
@@ -69,8 +118,14 @@ public class ActivityLogin extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
 
+
+
                     obtenerNegocioYContinuar();
                     Toast.makeText(ActivityLogin.this, "Bienvenido", Toast.LENGTH_SHORT).show();
+
+                    createNotification();
+                    createNotificationChannel();
+
                 }else{
                     Toast.makeText(ActivityLogin.this, "Error al ingresar datos", Toast.LENGTH_SHORT).show();
                 }

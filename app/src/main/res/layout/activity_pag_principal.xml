@@ -64,14 +64,14 @@
         android:layout_height="55dp"
         android:layout_marginStart="160dp"
         android:layout_marginTop="36dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+        app:layout_constraintEnd_toStartOf="@+id/btn_notificaciones"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/botones_secundarios" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/btn_notificaciones"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/campana"

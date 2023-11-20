@@ -1,38 +1,26 @@
 package com.adminminiinventario;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.content.Intent;
-
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adminminiinventario.adapter.ProductosAdapter;
-import com.adminminiinventario.Productos;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.*;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class Pag_Principal extends AppCompatActivity {
 
@@ -102,6 +90,15 @@ public class Pag_Principal extends AppCompatActivity {
             public void onClick(View view) {
                 // Crea un Intent para abrir Pagina Cliente
                 Intent intent = new Intent(Pag_Principal.this, ActivityGestorCompradores.class);
+                startActivity(intent);
+            }
+        });
+        ImageButton bt_notificaciones = findViewById(R.id.btn_notificaciones);
+        bt_notificaciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, Notificaciones.class);
                 startActivity(intent);
             }
         });

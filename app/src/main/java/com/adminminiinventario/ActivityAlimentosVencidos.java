@@ -1,14 +1,14 @@
 package com.adminminiinventario;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -93,11 +93,12 @@ public class ActivityAlimentosVencidos extends AppCompatActivity {
         calendar.add(Calendar.DAY_OF_YEAR, 14);
         Date fechaVencimientoMaxima = calendar.getTime();
 
-        // Obtener la fecha de vencimiento del producto
-        Date fechaVencimiento = producto.getfechaVencimiento().toDate();
+        // Obtener la fecha de vencimiento del producto, manejando el caso en que sea nulo
+        Timestamp fechaVencimientoTimestamp = producto.getfechaVencimiento();
+        Date fechaVencimiento = (fechaVencimientoTimestamp != null) ? fechaVencimientoTimestamp.toDate() : null;
 
-        // Verificar si el producto está a punto de vencer
-        if (fechaVencimiento.after(fechaActual) && fechaVencimiento.before(fechaVencimientoMaxima)) {
+        // Verificar si el producto tiene fecha de vencimiento y está a punto de vencer
+        if (fechaVencimiento != null && fechaVencimiento.after(fechaActual) && fechaVencimiento.before(fechaVencimientoMaxima)) {
             productosMostrados.add(producto);
         }
     }
