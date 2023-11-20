@@ -102,17 +102,16 @@ public class ActivityLogin extends AppCompatActivity {
         managerCompat.notify(1, builder.build());
     }
 
-    private void setPendingIntent(Class<?> clsActivity){
+    private void setPendingIntent(Class<?> clsActivity) {
         Intent intent = new Intent(this, clsActivity);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(clsActivity);
-        stackBuilder.addNextIntent(intent);
-        pendingIntent = stackBuilder.getPendingIntent(1,PendingIntent.FLAG_UPDATE_CURRENT);
+        stackBuilder.addNextIntentWithParentStack(intent);
+        pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE);
     }
 
 
 
-     private void login(String correo, String contrasena){
+    private void login(String correo, String contrasena){
         auth.signInWithEmailAndPassword(correo, contrasena).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
