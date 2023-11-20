@@ -54,7 +54,7 @@ public class Productos {
     }
 
 
-    public void setCdBarras(String cdBarra) {
+    public void setCdBarras(String cdBarras) {
 
         this.cdBarras = cdBarras;
     }
