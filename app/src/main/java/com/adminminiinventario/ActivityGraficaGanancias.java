@@ -1,7 +1,11 @@
 package com.adminminiinventario;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +13,9 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +30,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class ActivityGraficaGanancias extends AppCompatActivity {
 
@@ -41,33 +48,12 @@ public class ActivityGraficaGanancias extends AppCompatActivity {
         editTextGananciaDiaria = findViewById(R.id.editTextGananciaDiaria);
         db = FirebaseFirestore.getInstance();
 
-        // Obtener el número de días en el mes actual
-        int diasEnElMes = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        // Obtener el mes actual y asignarlo a la variable miembro
         mesActual = new SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(new Date());
 
-        // Crear el encabezado para la tabla
-        TableRow headerRow = new TableRow(this);
-        headerRow.addView(createTextView("Dia", Gravity.CENTER));
-        headerRow.addView(createTextView("Ganancia", Gravity.CENTER));
-        tablaGanancias.addView(headerRow);
+        inicializarTabla();
+        cargarGananciasDesdeTabla();
+        calcularGananciasTotales();
 
-        // Crear filas para los días del mes actual
-        for (int dia = 1; dia <= diasEnElMes; dia++) {
-            TableRow row = new TableRow(this);
-            row.addView(createTextView(String.valueOf(dia), Gravity.CENTER));
-            row.addView(createTextView("", Gravity.CENTER));
-            tablaGanancias.addView(row);
-        }
-
-        // Cargar ganancias desde Firestore
-        cargarGananciasDesdeFirestore();
-
-        // Calcular ganancias totales
-        calcularGananciasTotales(mesActual);
-
-        // Filtro para aceptar solo números en el campo de ganancia
         editTextGananciaDiaria.setFilters(new InputFilter[]{(source, start, end, dest, dstart, dend) -> {
             for (int i = start; i < end; i++) {
                 if (!Character.isDigit(source.charAt(i))) {
@@ -77,47 +63,126 @@ public class ActivityGraficaGanancias extends AppCompatActivity {
             return null;
         }});
 
-        // Botón para guardar ganancias
         Button botonGuardarGanancia = findViewById(R.id.botonGuardarGanancia);
-        botonGuardarGanancia.setOnClickListener(v -> {
-            // Obtener la ganancia ingresada
-            String gananciaDiaria = editTextGananciaDiaria.getText().toString();
-
-            // Guardar la ganancia en Firestore
-            guardarGananciaFirestore(gananciaDiaria);
-
-            // Obtener el día actual
-            int diaActual = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-
-            // Actualizar la tabla con la ganancia ingresada
-            actualizarTabla(String.valueOf(diaActual), gananciaDiaria);
-
-            // Calcular ganancias totales después de guardar la ganancia
-            calcularGananciasTotales(mesActual);
-
-            // Limpiar el campo de entrada
-            editTextGananciaDiaria.setText("");
-        });
-
-        // Verificar si el mes actual es diferente al mes registrado en la última entrada
-        verificarYReiniciarTabla();
+        botonGuardarGanancia.setOnClickListener(v -> guardarGanancia());
     }
 
-    private void actualizarTabla(String fechaIngresada, String gananciaDiaria) {
-        // Eliminar cero a la izquierda en la fecha ingresada
-        String fechaSinCero = fechaIngresada.replaceFirst("^0", "");
+    private void inicializarTabla() {
+        int diasEnElMes = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        // Verificar si ya existe una fila para la fecha ingresada
+        TableRow headerRow = new TableRow(this);
+        headerRow.addView(createTextView("Dia", Gravity.CENTER));
+        headerRow.addView(createTextView("Ganancia", Gravity.CENTER));
+        headerRow.addView(createTextView("", Gravity.CENTER));
+
+        // Configurar el ancho de las celdas del encabezado
+        for (int i = 0; i < headerRow.getChildCount(); i++) {
+            View view = headerRow.getChildAt(i);
+            view.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+        }
+
+        tablaGanancias.addView(headerRow);
+
+        headerRow.setBackgroundColor(Color.parseColor("#CCCCCC"));
+
+        for (int dia = 1; dia <= diasEnElMes; dia++) {
+            TableRow row = new TableRow(this);
+            row.addView(createTextView(String.valueOf(dia), Gravity.CENTER));
+            row.addView(createTextView("", Gravity.CENTER));
+            Button botonEditar = createButton("Editar", dia);
+
+            // Verificar si el día aún no ha llegado
+            if (dia > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                // Si el día aún no ha llegado, deshabilitar el botón
+                botonEditar.setEnabled(false);
+            }
+
+            row.addView(botonEditar);
+            tablaGanancias.addView(row);
+            cargarGananciaDiaria(String.valueOf(dia));
+
+            // Configurar el ancho de las celdas de las filas
+            for (int i = 0; i < row.getChildCount(); i++) {
+                View view = row.getChildAt(i);
+                view.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            }
+        }
+
+        cargarGananciasDesdeTabla();
+        calcularGananciasTotales();
+    }
+
+    private void guardarGanancia() {
+        String gananciaDiaria = editTextGananciaDiaria.getText().toString();
+        int diaActual = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+        // Verificar si ya se insertó una ganancia para el día actual
+        if (!gananciaDiaria.isEmpty() && !yaInsertadoGanancia(String.valueOf(diaActual))) {
+            guardarGananciaFirestore(String.valueOf(diaActual), gananciaDiaria);
+            actualizarTabla(String.valueOf(diaActual), gananciaDiaria);
+            calcularGananciasTotales();
+            editTextGananciaDiaria.setText("");
+
+            // Deshabilitar el botón de guardarGanancia después de insertar una ganancia
+            Button botonGuardarGanancia = findViewById(R.id.botonGuardarGanancia);
+            botonGuardarGanancia.setEnabled(false);
+        } else {
+            Toast.makeText(getApplicationContext(), "Ingrese una ganancia válida o ya se ha ingresado para este día", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean yaInsertadoGanancia(String dia) {
+        // Verificar si ya se insertó una ganancia para el día actual
+        TableRow row = obtenerFilaPorDia(dia);
+        if (row != null) {
+            TextView textViewGanancia = (TextView) row.getChildAt(1);
+            return !TextUtils.isEmpty(textViewGanancia.getText().toString());
+        }
+        return false;
+    }
+
+    private TableRow obtenerFilaPorDia(String dia) {
+        // Obtener la fila correspondiente al día
+        for (int i = 1; i < tablaGanancias.getChildCount(); i++) {
+            TableRow row = (TableRow) tablaGanancias.getChildAt(i);
+            TextView textViewDia = (TextView) row.getChildAt(0);
+            String fechaTabla = textViewDia.getText().toString().replaceFirst("^0", "");
+
+            if (fechaTabla.equals(dia)) {
+                return row;
+            }
+        }
+        return null;
+    }
+
+    private void cargarGananciaDiaria(String dia) {
+        String userId = obtenerIdUsuarioActual();
+
+        db.collection("ganancias")
+                .document(generarIdGanancia(mesActual, userId, dia))
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().exists()) {
+                            String gananciaDiaria = task.getResult().getString("ganancia");
+                            actualizarTabla(dia, gananciaDiaria);
+                        }
+                    } else {
+                        // Manejar el error
+                    }
+                });
+    }
+
+    private void actualizarTabla(String fecha, String gananciaDiaria) {
+        String fechaSinCero = fecha.replaceFirst("^0", "");
+
         boolean filaExistente = false;
         for (int i = 1; i < tablaGanancias.getChildCount(); i++) {
             TableRow row = (TableRow) tablaGanancias.getChildAt(i);
             TextView textViewDia = (TextView) row.getChildAt(0);
-
-            // Eliminar cero a la izquierda en la fecha de la tabla
             String fechaTabla = textViewDia.getText().toString().replaceFirst("^0", "");
 
             if (fechaTabla.equals(fechaSinCero)) {
-                // La fila ya existe, actualizar la celda de ganancia
                 TextView textViewGanancia = (TextView) row.getChildAt(1);
                 textViewGanancia.setText(gananciaDiaria);
                 filaExistente = true;
@@ -125,95 +190,73 @@ public class ActivityGraficaGanancias extends AppCompatActivity {
             }
         }
 
-        // Si no existe una fila para la fecha ingresada, crear una nueva fila
         if (!filaExistente) {
             TableRow row = new TableRow(this);
-            row.addView(createTextView(fechaIngresada, Gravity.CENTER));
+            row.addView(createTextView(fecha, Gravity.CENTER));
             row.addView(createTextView(gananciaDiaria, Gravity.CENTER));
             tablaGanancias.addView(row);
         }
     }
 
+    private void cargarGananciasDesdeTabla() {
+        for (int i = 1; i < tablaGanancias.getChildCount(); i++) {
+            TableRow row = (TableRow) tablaGanancias.getChildAt(i);
+            TextView textViewDia = (TextView) row.getChildAt(0);
+            String dia = textViewDia.getText().toString();
+            cargarGananciaDiaria(dia);
+        }
+        calcularGananciasTotales();
+    }
 
-    private void verificarYReiniciarTabla() {
-        // Obtener el mes actual
-        String mesActual = new SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(new Date());
+    private void guardarGananciaFirestore(String dia, String gananciaDiaria) {
+        String userId = obtenerIdUsuarioActual();
+        String idGanancia = generarIdGanancia(mesActual, userId, dia);
 
-        // Obtener el último mes registrado en la tabla de Firestore
+        Map<String, Object> gananciaMap = new HashMap<>();
+        gananciaMap.put("ganancia", gananciaDiaria);
+        gananciaMap.put("mes", mesActual);
+        gananciaMap.put("userId", userId);
+
         db.collection("ganancias")
-                .orderBy("mes", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .limit(1)
-                .get()
+                .document(idGanancia)
+                .set(gananciaMap)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String ultimoMesRegistrado = document.getString("mes");
-
-                            // Comparar el mes actual con el último mes registrado
-                            if (!mesActual.equals(ultimoMesRegistrado)) {
-                                // Si son diferentes, reiniciar la tabla
-                                reiniciarTabla();
-
-                                // Calcular y mostrar las ganancias totales en el mes actual
-                                calcularGananciasTotales(mesActual);
-                            }
-                        }
+                        // Éxito al guardar en Firestore
+                    } else {
+                        // Manejar el error
                     }
                 });
     }
 
-    private void calcularGananciasTotales(String mesActual) {
-        // Limpiar el TextView antes de actualizar
+    private void calcularGananciasTotales() {
+        long gananciasTotales = 0;
+
+        for (int i = 1; i < tablaGanancias.getChildCount(); i++) {
+            TableRow row = (TableRow) tablaGanancias.getChildAt(i);
+            TextView textViewGanancia = (TextView) row.getChildAt(1);
+
+            String gananciaDiariaStr = textViewGanancia.getText().toString().trim();
+
+            try {
+                long gananciaDiaria = Long.parseLong(gananciaDiariaStr);
+                gananciasTotales += gananciaDiaria;
+            } catch (NumberFormatException e) {
+                // Manejar el error de conversión
+                Log.e("Error", "Error al convertir gananciaDiaria a long: " + e.getMessage());
+            }
+        }
+
+        // Obtener el nombre del mes en español
+        String nombreMes = obtenerNombreMes(Calendar.getInstance().get(Calendar.MONTH) + 1);
+
+        // Mostrar las ganancias totales en el TextView
         TextView textViewGananciasTotales = findViewById(R.id.textViewGananciasTotales);
-        textViewGananciasTotales.setText("");
+        textViewGananciasTotales.setText("Ganancias totales en " + nombreMes + ": $" + gananciasTotales);
+        textViewGananciasTotales.invalidate();
 
-        // Obtener el mes y el año actual
-        String[] partesMesActual = mesActual.split("-");
-        String mes = partesMesActual[0];
-        String anio = partesMesActual[1];
-
-        // Almacena las fechas ya procesadas para evitar duplicados
-        Set<String> fechasProcesadas = new HashSet<>();
-
-        // Realizar una consulta a la base de datos para obtener las ganancias del mes actual
-        db.collection("ganancias")
-                .whereEqualTo("mes", mesActual)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        double gananciasTotales = 0.0;
-
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Obtener la fecha y la ganancia diaria
-                            String fecha = document.getString("fecha");
-                            String gananciaDiaria = document.getString("ganancia");
-
-                            // Extraer solo la parte de la fecha sin la hora
-                            String fechaSinHora = fecha.substring(0, 10);
-
-                            // Verificar si ya se ha procesado esta fecha
-                            if (!fechasProcesadas.contains(fechaSinHora)) {
-                                // Agregar la fecha actual al conjunto de fechas procesadas
-                                fechasProcesadas.add(fechaSinHora);
-
-                                // Verificar que la ganancia diaria no esté vacía
-                                if (gananciaDiaria != null && !gananciaDiaria.isEmpty()) {
-                                    // Sumar la ganancia diaria a las ganancias totales
-                                    gananciasTotales += Double.parseDouble(gananciaDiaria);
-                                }
-                            }
-                        }
-
-                        // Obtener el nombre del mes en español
-                        String nombreMes = obtenerNombreMes(Integer.parseInt(mes));
-
-                        // Mostrar las ganancias totales en el TextView
-                        textViewGananciasTotales.setText("Ganancias totales en " + nombreMes + " de " + anio + ": $" + gananciasTotales);
-                    } else {
-                        // Manejar el error
-                        textViewGananciasTotales.setText("Error al obtener las ganancias.");
-                    }
-                });
+        // Agregar un log para imprimir las ganancias totales
+        Log.d("GananciasTotales", "Ganancias totales en " + nombreMes + ": $" + gananciasTotales);
     }
 
     private String obtenerNombreMes(int numeroMes) {
@@ -228,96 +271,10 @@ public class ActivityGraficaGanancias extends AppCompatActivity {
         return sdf.format(calendar.getTime());
     }
 
-    private void reiniciarTabla() {
-        // Limpiar todas las filas excepto la primera (encabezado)
-        tablaGanancias.removeViews(1, tablaGanancias.getChildCount() - 1);
-
-        // Actualizar el mes registrado en Firestore
-        Map<String, Object> nuevaEntrada = new HashMap<>();
-        nuevaEntrada.put("mes", new SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(new Date()));
-
-        db.collection("ganancias")
-                .add(nuevaEntrada)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Éxito al reiniciar la tabla
-                    } else {
-                        // Manejar el error
-                    }
-                });
+    private String generarIdGanancia(String mes, String userId, String dia) {
+        return mes + "-" + userId + "-" + dia;
     }
 
-    // Almacena las ganancias de cada usuario
-    private void guardarGananciaFirestore(String gananciaDiaria) {
-        // Obtener la fecha actual
-        String fechaActual = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-
-        // Obtener el ID de usuario actual
-        String userId = obtenerIdUsuarioActual();
-
-        // Crear un mapa con los datos a almacenar
-        Map<String, Object> gananciaMap = new HashMap<>();
-        gananciaMap.put("ganancia", gananciaDiaria);
-        gananciaMap.put("fecha", fechaActual);
-        gananciaMap.put("mes", new SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(new Date()));
-        gananciaMap.put("userId", userId);  // Agregar el ID de usuario
-
-        // Almacenar la ganancia en Firestore
-        db.collection("ganancias")
-                .add(gananciaMap)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Éxito al guardar en Firestore
-
-                        // Calcular ganancias totales después de guardar la ganancia
-                        calcularGananciasTotales(mesActual);
-                    } else {
-                        // Manejar el error
-                    }
-                });
-    }
-
-    private void cargarGananciasDesdeFirestore() {
-        // Obtener el mes actual
-        String mesActual = new SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(new Date());
-
-        // Obtener el ID de usuario actual
-        String userId = obtenerIdUsuarioActual();
-
-        // Almacena las fechas ya procesadas para evitar duplicados
-        Set<String> fechasProcesadas = new HashSet<>();
-
-        // Realizar una consulta a la base de datos para obtener las ganancias del mes actual para el usuario actual
-        db.collection("ganancias")
-                .whereEqualTo("mes", mesActual)
-                .whereEqualTo("userId", userId)  // Filtrar por el ID de usuario
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Obtener la fecha y la ganancia diaria
-                            String fecha = document.getString("fecha");
-                            String gananciaDiaria = document.getString("ganancia");
-
-                            // Extraer solo la parte de la fecha sin la hora
-                            String fechaSinHora = fecha.substring(0, 10);
-
-                            // Verificar si ya se ha procesado esta fecha
-                            if (!fechasProcesadas.contains(fechaSinHora)) {
-                                // Agregar la fecha actual al conjunto de fechas procesadas
-                                fechasProcesadas.add(fechaSinHora);
-
-                                // Actualizar la tabla con la ganancia correspondiente
-                                actualizarTabla(fecha.substring(8), gananciaDiaria);
-                            }
-                        }
-                    } else {
-                        // Manejar el error
-                    }
-                });
-    }
-
-    // Obtener el ID del usuario
     private String obtenerIdUsuarioActual() {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
@@ -328,5 +285,96 @@ public class ActivityGraficaGanancias extends AppCompatActivity {
         textView.setGravity(gravity);
         textView.setPadding(16, 16, 16, 16);
         return textView;
+    }
+
+    private Button createButton(String text, int dia) {
+        Button button = new Button(this);
+        button.setText(text);
+        button.setOnClickListener(v -> editarGanancia(dia));
+        return button;
+    }
+
+    private void editarGanancia(int dia) {
+        // Crear un cuadro de diálogo de edición
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Editar Ganancia para el Día " + dia);
+
+        // Crear un EditText en el cuadro de diálogo
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        // Configurar el botón de actualización en el cuadro de diálogo
+        builder.setPositiveButton("Actualizar", (dialog, which) -> {
+            String nuevaGanancia = input.getText().toString().trim();
+            // Validar y actualizar la ganancia en la base de datos
+            if (!TextUtils.isEmpty(nuevaGanancia)) {
+                actualizarGananciaEnFirebase(dia, nuevaGanancia);
+
+                // Actualizar la tabla con la ganancia ingresada
+                actualizarTabla(String.valueOf(dia), nuevaGanancia);
+
+                // Calcular ganancias totales después de guardar la ganancia
+                calcularGananciasTotales();
+            } else {
+                Toast.makeText(getApplicationContext(), "Ingrese una ganancia válida", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Configurar el botón de cancelar en el cuadro de diálogo
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+
+        // Mostrar el cuadro de diálogo
+        builder.show();
+
+        calcularGananciasTotales();
+    }
+
+    private void actualizarGananciaEnFirebase(int dia, String nuevaGanancia) {
+        // Obtener el mes actual
+        String mesActual = new SimpleDateFormat("MM-yyyy", Locale.getDefault()).format(new Date());
+
+        // Obtener el ID de usuario actual
+        String userId = obtenerIdUsuarioActual();
+
+        // Formatear el día para que tenga dos dígitos
+        String diaFormateado = String.format(Locale.getDefault(), "%02d", dia);
+
+        // Crear la fecha completa en el formato de la base de datos
+        String fechaCompleta = mesActual + "-" + diaFormateado;
+
+        // Realizar una consulta en la base de datos para encontrar la entrada correspondiente a la fecha
+        db.collection("ganancias")
+                .whereEqualTo("mes", mesActual)
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("fecha", fechaCompleta)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Obtener el ID único de la ganancia
+                            String gananciaId = document.getString("gananciaId");
+
+                            // Crear un mapa con los datos actualizados
+                            Map<String, Object> datosActualizados = new HashMap<>();
+                            datosActualizados.put("ganancia", nuevaGanancia);
+
+                            // Actualizar la entrada en la base de datos usando el "gananciaId"
+                            db.collection("ganancias")
+                                    .document(gananciaId)
+                                    .update(datosActualizados)
+                                    .addOnCompleteListener(updateTask -> {
+                                        if (updateTask.isSuccessful()) {
+                                            // Éxito al actualizar la ganancia
+                                            // Puedes realizar acciones adicionales si es necesario
+                                        } else {
+                                            // Manejar el error al actualizar la ganancia
+                                        }
+                                    });
+                        }
+                    } else {
+                        // Manejar el error al realizar la consulta
+                    }
+                });
     }
 }
