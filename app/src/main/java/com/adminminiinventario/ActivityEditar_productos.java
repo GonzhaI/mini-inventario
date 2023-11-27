@@ -1,5 +1,6 @@
 package com.adminminiinventario;
 
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.adminminiinventario.adapter.Producto;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -105,7 +109,7 @@ public class ActivityEditar_productos extends AppCompatActivity {
                 String fechaFormateada = sdf.format(producto.getFechaVencimiento());
                 fechaVencimientoTextView.setText(fechaFormateada);
             } else {
-                fechaVencimientoTextView.setText("Fecha no disponible");
+                fechaVencimientoTextView.setText("Fecha no\ndisponible");
             }
 
             // Lógica para el código de barras

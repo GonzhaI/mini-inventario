@@ -23,6 +23,7 @@
         android:layout_height="45dp"
         android:background="@drawable/edit_text_edit"
         android:hint="Nombre del Cliente"
+        android:paddingStart="10dp"
         android:inputType="text"
         android:textColor="@color/black"
         android:textColorHint="#72000000"
@@ -56,6 +57,7 @@
         android:layout_height="45dp"
         android:background="@drawable/edit_text_edit"
         android:hint="Días Restantes para Pagar"
+        android:paddingStart="10dp"
         android:inputType="number"
         android:textColor="@color/black"
         android:textColorHint="#72000000"
@@ -72,6 +74,7 @@
         android:layout_height="45dp"
         android:background="@drawable/edit_text_edit"
         android:hint="Descuento (%)"
+        android:paddingStart="10dp"
         android:inputType="numberDecimal"
         android:textColor="@color/black"
         android:textColorHint="#72000000"
@@ -90,6 +93,7 @@
         android:layout_marginEnd="95dp"
         android:backgroundTint="#eb5e28"
         android:text="Guardar"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -125,7 +129,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.039"
-        app:srcCompat="@drawable/signo_de_interrogacion" />
+        app:srcCompat="@drawable/informacion" />
     <View
         android:id="@+id/pantalla_tutorial_agregar_cliente"
         android:layout_width="match_parent"

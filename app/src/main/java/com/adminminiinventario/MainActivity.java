@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Crea un Intent para abrir PaginaPrincipal
-                Intent intent = new Intent(MainActivity.this, ActivityRegistrarse.class);
+                Intent intent = new Intent(MainActivity.this, ActivityLogin.class);
                 startActivity(intent);
             }
         });
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void irLogin(View view) {
         // Crear un Intent para ir a la otra actividad
-        Intent intent = new Intent(this, ActivityLogin.class);
+        Intent intent = new Intent(this, ActivityRegistrarse.class);
         startActivity(intent);
     }
 
