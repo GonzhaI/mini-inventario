@@ -20,33 +20,33 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.InventarioViewHolder> {
+public class ObjetosAdapter extends RecyclerView.Adapter<ObjetosAdapter.ObjetosViewHolder> {
 
     private List<Producto> productList;
     private Context context;
 
-    public InventarioAdapter(Context context, List<Producto> productList) {
+    public ObjetosAdapter(Context context, List<Producto> productList) {
         this.context = context;
         this.productList = productList;
     }
 
     @NonNull
     @Override
-    public InventarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.casilla_inventario, parent, false);
-        return new InventarioViewHolder(view);
+    public ObjetosViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.casilla_objetos, parent, false);
+        return new ObjetosViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InventarioViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ObjetosViewHolder holder, int position) {
         Producto producto = productList.get(position);
 
         holder.nombre_producto.setText(producto.getNombre_producto());
+        String valorFormateado = formatDouble(producto.getValor());
+        holder.valor.setText(valorFormateado);
         int cantidad = producto.getCantidad();
         String cantidadFormateada = String.format("Unidades: %d", cantidad);
         holder.Cantidad.setText(cantidadFormateada);
-        String valorFormateado = formatDouble(producto.getValor());
-        holder.valor.setText(valorFormateado);
 
         if (producto.getImagenURL() != null && !producto.getImagenURL().isEmpty()) {
             Picasso.get().load(producto.getImagenURL()).into(holder.imagen_producto);
@@ -92,7 +92,7 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         return productList.size();
     }
 
-    public class InventarioViewHolder extends RecyclerView.ViewHolder {
+    public class ObjetosViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView nombre_producto;
         TextView valor;
@@ -101,14 +101,14 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
         TextView codigo_barra;
         TextView Cantidad;
 
-        public InventarioViewHolder(View itemView) {
+        public ObjetosViewHolder(View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.yay);
-            nombre_producto = itemView.findViewById(R.id.nombre_producto);
-            valor = itemView.findViewById(R.id.precio);
-            fechaVencimiento = itemView.findViewById(R.id.fecha_vencimiento);
-            imagen_producto = itemView.findViewById(R.id.imagen_producto);
-            codigo_barra = itemView.findViewById(R.id.producto_id);
+            nombre_producto = itemView.findViewById(R.id.nombre_producto_obj);
+            valor = itemView.findViewById(R.id.precio_obj);
+            fechaVencimiento = itemView.findViewById(R.id.fecha_vencimiento_obj);
+            imagen_producto = itemView.findViewById(R.id.imagen_producto_obj);
+            codigo_barra = itemView.findViewById(R.id.producto_id_obj);
             Cantidad = itemView.findViewById(R.id.cantidad);
 
 

@@ -1,15 +1,12 @@
 package com.adminminiinventario;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.adminminiinventario.adapter.Producto;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -48,7 +45,7 @@ public class ActivityEditar_productos extends AppCompatActivity {
                 String fechaFormateada = sdf.format(producto.getFechaVencimiento());
                 fechaVencimientoTextView.setText(fechaFormateada);
             } else {
-                fechaVencimientoTextView.setText("Fecha no disponible");
+                fechaVencimientoTextView.setText("Fecha no\ndisponible");
             }
 
             // Lógica para el código de barras

@@ -66,4 +66,6 @@ dependencies {
 
     // Ganancias
     implementation("com.github.alcarazolabs:FastTableLayout:1.0.0")
+
+    // Animaciones:
 }

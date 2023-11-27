@@ -301,7 +301,7 @@
         app:srcCompat="@drawable/cuestionario" />
 
     <ImageButton
-        android:id="@+id/imageButton6"
+        android:id="@+id/imageButton_alimentos"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:background="@drawable/dieta"
@@ -313,7 +313,7 @@
         app:srcCompat="@drawable/dieta" />
 
     <ImageButton
-        android:id="@+id/imageButton7"
+        android:id="@+id/imageButton_objetos"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginTop="28dp"

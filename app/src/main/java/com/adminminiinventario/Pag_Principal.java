@@ -114,6 +114,28 @@ public class Pag_Principal extends AppCompatActivity {
             }
         });
 
+        ImageButton bt_alimentos = findViewById(R.id.imageButton_alimentos);
+        bt_alimentos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, Alimentos.class);
+                intent.putExtra("negocio", negocio);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton bt_objetos = findViewById(R.id.imageButton_objetos);
+        bt_objetos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, Objetos.class);
+                intent.putExtra("negocio", negocio);
+                startActivity(intent);
+            }
+        });
+
         ImageButton bt_ganancias = findViewById(R.id.imageButtonGanancias);
         bt_ganancias.setOnClickListener(new View.OnClickListener() {
             @Override

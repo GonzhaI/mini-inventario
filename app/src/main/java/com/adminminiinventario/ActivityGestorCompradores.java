@@ -1,6 +1,7 @@
 package com.adminminiinventario;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,18 +9,13 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class ActivityGestorCompradores extends AppCompatActivity {
     private FirebaseFirestore db;
@@ -44,15 +40,19 @@ public class ActivityGestorCompradores extends AppCompatActivity {
         // Crear TextViews para los títulos
         TextView headerNombre = new TextView(this);
         headerNombre.setText("Nombre del Cliente");
+        headerNombre.setTextColor(Color.WHITE);
 
         TextView headerDeudor = new TextView(this);
         headerDeudor.setText("¿Es Deudor?");
+        headerDeudor.setTextColor(Color.WHITE);
 
         TextView headerDiasRestantes = new TextView(this);
         headerDiasRestantes.setText("Días Restantes");
+        headerDiasRestantes.setTextColor(Color.WHITE);
 
         TextView headerDescuento = new TextView(this);
         headerDescuento.setText("Descuento (%)");
+        headerDescuento.setTextColor(Color.WHITE);
 
         // Configurar espacio de columnas
         headerNombre.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
@@ -68,6 +68,7 @@ public class ActivityGestorCompradores extends AppCompatActivity {
 
         // Agregar la fila de títulos a la parte superior de la tabla
         tableLayoutClientes.addView(headerRow, 0);
+
 
         btnAgregarCliente.setOnClickListener(new View.OnClickListener() {
             @Override
