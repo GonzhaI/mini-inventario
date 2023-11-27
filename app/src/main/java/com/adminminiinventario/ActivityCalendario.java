@@ -44,6 +44,7 @@ public class ActivityCalendario extends AppCompatActivity {
         tv = findViewById(R.id.fecha);
         botonFechaP = findViewById(R.id.botonFecha);
         db = FirebaseFirestore.getInstance();
+        String negocio = getIntent().getStringExtra("negocio");
     }
 
     public void abrirCalendario(View view) {
