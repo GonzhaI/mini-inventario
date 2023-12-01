@@ -40,7 +40,7 @@ public class ActivityCalendario extends AppCompatActivity {
     private Timestamp fechaTimestamp;
     private FirebaseFirestore db;
 
-    View pantalla_tutorial_agregar_cliente;
+    View pantalla_tutorial_distribuidor;
 
     private VideoView vv_tutorial_distribuidor;
 
@@ -55,20 +55,18 @@ public class ActivityCalendario extends AppCompatActivity {
         setContentView(R.layout.activity_calendario);
 
         String negocio = getIntent().getStringExtra("negocio");
-    }
 
 
-
-        pantalla_tutorial_agregar_cliente = findViewById(R.id.pantalla_tutorial_agregar_cliente);
-        ImageView btnTutorial = findViewById(R.id.btn_tutorial_agregar_cliente);
-        ImageView btnTutorialSalir = findViewById(R.id.btn_tutorial_agregar_cliente_salir);
+        pantalla_tutorial_distribuidor = findViewById(R.id.pantalla_tutorial_distribuidor);
+        ImageView btnTutorial = findViewById(R.id.btn_tutorial_distribuidor);
+        ImageView btnTutorialSalir = findViewById(R.id.btn_tutorial_distribuidor_salir);
 
         // Añadir referencias a los TextView que quieres mostrar
-        TextView mensajeTutorial1 = findViewById(R.id.tv_mensaje_tutorial_1_agregar_cliente);
-        TextView mensajeTutorial2 = findViewById(R.id.tv_mensaje_tutorial_2_agregar_cliente);
+        TextView mensajeTutorial1 = findViewById(R.id.tv_mensaje_tutorial_1_distribuidor);
+        TextView mensajeTutorial2 = findViewById(R.id.tv_mensaje_tutorial_2_distribuidor);
 
         // Inicializar el VideoView
-        vv_tutorial_distribuidor = findViewById(R.id.vv_tutorial_ingreso_clientes);
+        vv_tutorial_distribuidor = findViewById(R.id.vv_tutorial_distribuidor);
 
         // Configurar la fuente del video
         String videoTutorial_agregar_productos = "android.resource://" + getPackageName() + "/" + R.raw.video_distruibuidor;
@@ -83,8 +81,8 @@ public class ActivityCalendario extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Cambiar visibilidad del overlayView y botones
-                if (pantalla_tutorial_agregar_cliente.getVisibility() == View.VISIBLE) {
-                    pantalla_tutorial_agregar_cliente.setVisibility(View.GONE);
+                if (pantalla_tutorial_distribuidor.getVisibility() == View.VISIBLE) {
+                    pantalla_tutorial_distribuidor.setVisibility(View.GONE);
                     btnTutorialSalir.setVisibility(View.GONE);
                     btnTutorial.setVisibility(View.VISIBLE);
 
@@ -96,7 +94,7 @@ public class ActivityCalendario extends AppCompatActivity {
                     vv_tutorial_distribuidor.stopPlayback();
                     vv_tutorial_distribuidor.setVisibility(View.GONE);
                 } else {
-                    pantalla_tutorial_agregar_cliente.setVisibility(View.VISIBLE);
+                    pantalla_tutorial_distribuidor.setVisibility(View.VISIBLE);
                     btnTutorial.setVisibility(View.GONE);
                     btnTutorialSalir.setVisibility(View.VISIBLE);
 
@@ -112,11 +110,11 @@ public class ActivityCalendario extends AppCompatActivity {
         });
 
         // Agregar un OnClickListener al overlayView para manejar la visibilidad de los TextView
-        pantalla_tutorial_agregar_cliente.setOnClickListener(new View.OnClickListener() {
+        pantalla_tutorial_distribuidor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Revierte los cambios al hacer clic en el overlayView
-                pantalla_tutorial_agregar_cliente.setVisibility(View.GONE);
+                pantalla_tutorial_distribuidor.setVisibility(View.GONE);
                 btnTutorialSalir.setVisibility(View.GONE);
                 btnTutorial.setVisibility(View.VISIBLE);
 
