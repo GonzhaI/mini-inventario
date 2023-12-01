@@ -40,6 +40,7 @@
         android:layout_height="49dp"
         android:layout_marginTop="44dp"
         android:text="Agregar Cliente Frecuente"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/tableLayoutClientes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

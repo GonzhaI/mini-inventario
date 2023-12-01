@@ -1,8 +1,9 @@
 package com.adminminiinventario.adapter;
 
 import java.util.Date;
+import java.io.Serializable;
 
-public class Producto {
+public class Producto implements Serializable {
     private int cantidad;
     private String id_negocio;
     private String nombre_producto;
@@ -27,6 +28,9 @@ public class Producto {
         this.fechaVencimiento = fechaVencimiento;
         this.imagenURL = imagenURL;
         this.codigo_barra = codigo_barra;
+    }
+    public Producto() {
+        // Constructor vacío necesario para Firebase
     }
 
     // Getters y setters para nombreProducto, precio y fechaVencimiento

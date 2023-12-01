@@ -9,8 +9,8 @@
 
     <View
         android:id="@+id/view2"
-        android:layout_width="420dp"
-        android:layout_height="575dp"
+        android:layout_width="427dp"
+        android:layout_height="577dp"
         android:background="@drawable/redondeo_pantprin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
         app:layout_constraintHorizontal_bias="0.295"
         app:layout_constraintStart_toEndOf="@+id/button"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.681" />
+        app:layout_constraintVertical_bias="0.67" />
 
     <TextView
         android:id="@+id/textpregunta"
@@ -98,10 +98,10 @@
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.304"
+        app:layout_constraintHorizontal_bias="0.371"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.77" />
+        app:layout_constraintVertical_bias="0.777" />
 
     <Button
         android:id="@+id/botonFecha"
@@ -125,9 +125,10 @@
         android:ems="10"
         android:hint="Nombre..."
         android:inputType="text"
+        android:paddingStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.405"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.852" />

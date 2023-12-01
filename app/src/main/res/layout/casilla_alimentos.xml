@@ -24,7 +24,7 @@
             android:padding="6dp">
 
             <ImageView
-                android:id="@+id/imagen_producto"
+                android:id="@+id/imagen_producto_ali"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_alignParentStart="true"
@@ -41,12 +41,12 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="1dp"
-                android:layout_toEndOf="@+id/imagen_producto"
-                android:layout_toRightOf="@+id/imagen_producto"
+                android:layout_toEndOf="@+id/imagen_producto_ali"
+                android:layout_toRightOf="@+id/imagen_producto_ali"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/nombre_producto"
+                    android:id="@+id/nombre_producto_ali"
                     android:layout_width="164dp"
                     android:layout_height="54dp"
                     android:layout_marginBottom="2dp"
@@ -58,25 +58,23 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/fecha_vencimiento"
+                    android:id="@+id/fecha_vencimiento_ali"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="Fecha de vencimiento" />
 
                 <TextView
-                    android:id="@+id/producto_id"
-                    android:layout_width="90dp"
+                    android:id="@+id/producto_id_ali"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="0000000000"
                     android:textColor="@color/white" />
 
-
             </LinearLayout>
 
-
             <LinearLayout
-                android:id="@+id/lugar_precio"
+                android:id="@+id/lugar_precio_ali"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -88,7 +86,7 @@
 
 
                 <TextView
-                    android:id="@+id/precio"
+                    android:id="@+id/precio_ali"
                     android:layout_width="139dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
@@ -98,7 +96,6 @@
                     android:textAlignment="viewStart"
                     android:textColor="@color/white"
                     android:textSize="35dp" />
-
                 <TextView
                     android:id="@+id/cantidad"
                     android:layout_width="139dp"
@@ -111,7 +108,11 @@
                     android:textSize="20dp" />
 
 
+
             </LinearLayout>
+
+
+
 
         </RelativeLayout>
 

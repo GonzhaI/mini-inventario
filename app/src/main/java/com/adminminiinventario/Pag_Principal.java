@@ -1,37 +1,26 @@
 package com.adminminiinventario;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.content.Intent;
-
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adminminiinventario.adapter.ProductosAdapter;
-import com.adminminiinventario.Productos;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.*;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class Pag_Principal extends AppCompatActivity {
 
@@ -104,6 +93,15 @@ public class Pag_Principal extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ImageButton bt_notificaciones = findViewById(R.id.btn_notificaciones);
+        bt_notificaciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, Notificaciones.class);
+                startActivity(intent);
+            }
+        });
 
         ImageButton bt_inventario = findViewById(R.id.imageButton_Inventario);
         bt_inventario.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +110,38 @@ public class Pag_Principal extends AppCompatActivity {
                 // Crea un Intent para abrir Pagina Cliente
                 Intent intent = new Intent(Pag_Principal.this, inventario.class);
                 intent.putExtra("negocio", negocio);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton bt_alimentos = findViewById(R.id.imageButton_alimentos);
+        bt_alimentos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, Alimentos.class);
+                intent.putExtra("negocio", negocio);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton bt_objetos = findViewById(R.id.imageButton_objetos);
+        bt_objetos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir Pagina Cliente
+                Intent intent = new Intent(Pag_Principal.this, Objetos.class);
+                intent.putExtra("negocio", negocio);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton bt_ganancias = findViewById(R.id.imageButtonGanancias);
+        bt_ganancias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Crea un Intent para abrir la Tabla de Ganancias
+                Intent intent = new Intent(Pag_Principal.this, ActivityGraficaGanancias.class);
                 startActivity(intent);
             }
         });
@@ -188,6 +218,7 @@ public class Pag_Principal extends AppCompatActivity {
                         productosList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Productos producto = document.toObject(Productos.class);
+                            Log.d("Firebase", "Código de barras: " + producto.getCdBarras());
                             productosList.add(producto);
                         }
                         productosAdapter.notifyDataSetChanged();

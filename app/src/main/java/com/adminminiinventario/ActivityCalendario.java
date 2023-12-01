@@ -51,7 +51,12 @@ public class ActivityCalendario extends AppCompatActivity {
         tv = findViewById(R.id.fecha);
         botonFechaP = findViewById(R.id.botonFecha);
         db = FirebaseFirestore.getInstance();
+
         setContentView(R.layout.activity_calendario);
+
+        String negocio = getIntent().getStringExtra("negocio");
+    }
+
 
 
         pantalla_tutorial_agregar_cliente = findViewById(R.id.pantalla_tutorial_agregar_cliente);

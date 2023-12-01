@@ -11,12 +11,11 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="421dp"
-        android:layout_height="533dp"
+        android:layout_width="425dp"
+        android:layout_height="577dp"
         android:background="@drawable/redondeo_pantprin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="1.0" />
@@ -25,6 +24,7 @@
         android:id="@+id/negocioNombre"
         android:layout_width="127dp"
         android:layout_height="41dp"
+
         android:layout_marginBottom="28dp"
         android:text=""
         android:textColor="@color/black"
@@ -39,7 +39,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="96dp"
         android:fontFamily="@font/ibm_plex_serif_thin"
-        android:text="Agregar Producto"
+        android:text="Editar Productos"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/black"
         android:textSize="35dp"
@@ -47,9 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.561"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"/>
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnScanCodigoBarras"
@@ -74,7 +72,7 @@
         android:layout_marginEnd="95dp"
         android:layout_marginBottom="24dp"
         android:backgroundTint="#EB5E28"
-        android:text="Agregar Producto"
+        android:text="Guardar cambios"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -103,14 +101,15 @@
         android:layout_marginStart="40dp"
         android:layout_marginBottom="96dp"
         android:backgroundTint="#EB5E28"
-        android:text="Fecha De Vencimiento"
         android:onClick="abrirCalendarioAlimentos"
+        android:text="Fecha De Vencimiento"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_imagen_producto" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_imagen_producto"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/textView5"
@@ -263,7 +262,7 @@
         app:layout_constraintHorizontal_bias="0.821"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.961"/>
+        app:layout_constraintVertical_bias="0.961" />
 
     <ImageView
         android:id="@+id/imagen_producto"
@@ -273,80 +272,27 @@
         android:layout_marginBottom="156dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_imagen_producto"
+
         app:srcCompat="@drawable/imagen_predeterminada" />
 
-    <ImageView
-        android:id="@+id/btn_tutorial_agregar_producto"
-        android:layout_width="47dp"
-        android:layout_height="47dp"
-        android:backgroundTint="#EB5E28"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.923"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.039"
-        app:srcCompat="@drawable/informacion" />
-
-    <View
-        android:id="@+id/overlayView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/btn_tutorial_agregar_producto_salir"
-        android:layout_width="47dp"
-        android:layout_height="47dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.923"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.039"
-        app:srcCompat="@drawable/equis"
-        android:visibility="gone"/>
+       
 
     <TextView
-        android:id="@+id/tv_mensaje_tutorial_1"
-        android:layout_width="364dp"
-        android:layout_height="35dp"
-        android:text="Aqui podrás agregar los productos ya sean alimentos perecibles o productos como tal."
-        app:layout_constraintBottom_toBottomOf="@+id/view"
+        android:id="@+id/nombre_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.574"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.221"
-        android:visibility="gone"
-        />
+        app:layout_constraintVertical_bias="0.22" />
 
-    <TextView
-        android:id="@+id/tv_mensaje_tutorial_2"
-        android:layout_width="364dp"
-        android:layout_height="35dp"
-        android:text="En el siguiente video se muestra como se utiliza esta sección."
-        app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.574"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.287"
-        android:visibility="gone"/>
 
-    <VideoView
-        android:id="@+id/vv_tutorial_agregar_producto"
-        android:layout_width="370dp"
-        android:layout_height="470dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.562"
-        app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.873"
-        android:visibility="gone"
-        />
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

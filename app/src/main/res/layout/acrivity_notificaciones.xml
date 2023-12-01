@@ -8,42 +8,29 @@
     tools:context=".inventario">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mostrar_casillas_prin"
-        android:layout_width="414dp"
-        android:layout_height="639dp"
+        android:id="@+id/mostrar_casillas_stock"
+        android:layout_width="409dp"
+        android:layout_height="729dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.502" />
-
-    <Button
-        android:id="@+id/botonGenerarInforme"
-        android:layout_width="199dp"
-        android:layout_height="66dp"
-        android:layout_marginBottom="28dp"
-        android:backgroundTint="#EB5E28"
-        android:text="Generar Informe"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintVertical_bias="0.863" />
 
     <TextView
         android:id="@+id/textView17"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/ibm_plex_serif_thin"
-        android:text="Inventario"
-        android:textColor="@color/black"
+        android:text="Notificaciones"
         android:textSize="40dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/ibm_plex_serif_thin"
+        app:layout_constraintBottom_toTopOf="@+id/mostrar_casillas_stock"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
+        app:layout_constraintHorizontal_bias="0.104"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.475" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

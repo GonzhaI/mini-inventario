@@ -13,7 +13,7 @@
         android:id="@+id/image2"
         android:layout_width="145dp"
         android:layout_height="150dp"
-        android:layout_marginTop="248dp"
+        android:layout_marginTop="172dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.849"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,10 +26,10 @@
         android:layout_width="145dp"
         android:layout_height="150dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="248dp"
+        android:layout_marginTop="172dp"
         android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toStartOf="@+id/image2"
-        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/botones_principales" />
@@ -64,14 +64,14 @@
         android:layout_height="55dp"
         android:layout_marginStart="160dp"
         android:layout_marginTop="36dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+        app:layout_constraintEnd_toStartOf="@+id/btn_notificaciones"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/botones_secundarios" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/btn_notificaciones"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/campana"
@@ -114,7 +114,7 @@
         android:layout_height="150dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toStartOf="@+id/image3"
         app:layout_constraintHorizontal_bias="0.936"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +127,7 @@
         android:layout_height="150dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toStartOf="@+id/image6"
         app:layout_constraintHorizontal_bias="0.936"
         app:layout_constraintStart_toStartOf="parent"
@@ -142,6 +142,17 @@
         android:layout_marginEnd="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image3"
+        app:srcCompat="@drawable/botones_principales" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="145dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image5"
         app:srcCompat="@drawable/botones_principales" />
 
     <TextView
@@ -163,12 +174,12 @@
         android:id="@+id/negocioNombre"
         android:layout_width="127dp"
         android:layout_height="41dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="44dp"
-
-        android:text=""
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="24dp"
+        android:text="Negocio"
+        android:fontFamily="@font/ibm_plex_serif_thin"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="25dp"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toStartOf="@+id/imageView3" />
 
@@ -249,6 +260,21 @@
         app:layout_constraintTop_toTopOf="@+id/image6"
         app:layout_constraintVertical_bias="1.0" />
 
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="74dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:text="Ganancias"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.448"
+        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintVertical_bias="0.0" />
+
     <ImageButton
         android:id="@+id/imageButton4"
         android:layout_width="50dp"
@@ -275,7 +301,7 @@
         app:srcCompat="@drawable/cuestionario" />
 
     <ImageButton
-        android:id="@+id/imageButton6"
+        android:id="@+id/imageButton_alimentos"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:background="@drawable/dieta"
@@ -287,7 +313,7 @@
         app:srcCompat="@drawable/dieta" />
 
     <ImageButton
-        android:id="@+id/imageButton7"
+        android:id="@+id/imageButton_objetos"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginTop="28dp"
@@ -342,16 +368,23 @@
         app:layout_constraintVertical_bias="0.35"
         app:srcCompat="@drawable/mas" />
 
+    <ImageButton
+        android:id="@+id/imageButtonGanancias"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:scaleType="fitCenter"
+        android:background="@drawable/monedas"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintTop_toTopOf="@+id/imageView8"
+        app:srcCompat="@drawable/monedas" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-
-
-
-
-
         />
 
     <SearchView
@@ -359,12 +392,12 @@
         android:layout_width="383dp"
         android:layout_height="53dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="136dp"
+        android:layout_marginTop="104dp"
         android:iconifiedByDefault="false"
+        android:background="@drawable/barra_de_busqueda"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.407"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
