@@ -133,7 +133,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.852" />
     <ImageView
-        android:id="@+id/btn_tutorial_agregar_cliente"
+        android:id="@+id/btn_tutorial_distribuidor"
         android:layout_width="47dp"
         android:layout_height="47dp"
         android:backgroundTint="#EB5E28"
@@ -145,14 +145,14 @@
         app:layout_constraintVertical_bias="0.039"
         app:srcCompat="@drawable/signo_de_interrogacion" />
     <View
-        android:id="@+id/pantalla_tutorial_agregar_cliente"
+        android:id="@+id/pantalla_tutorial_distribuidor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#80000000"
         android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/btn_tutorial_agregar_cliente_salir"
+        android:id="@+id/btn_tutorial_distribuidor_salir"
         android:layout_width="47dp"
         android:layout_height="47dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -165,7 +165,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/tv_mensaje_tutorial_1_agregar_cliente"
+        android:id="@+id/tv_mensaje_tutorial_1_distribuidor"
         android:layout_width="368dp"
         android:layout_height="64dp"
 
@@ -180,7 +180,7 @@
         app:layout_constraintVertical_bias="0.211" />
 
     <TextView
-        android:id="@+id/tv_mensaje_tutorial_2_agregar_cliente"
+        android:id="@+id/tv_mensaje_tutorial_2_distribuidor"
         android:layout_width="364dp"
         android:layout_height="35dp"
         android:text="En el siguiente video se muestra como se utiliza esta sección."
@@ -189,11 +189,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.659"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_mensaje_tutorial_1_agregar_cliente"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mensaje_tutorial_1_distribuidor"
         app:layout_constraintVertical_bias="0.0" />
 
     <VideoView
-        android:id="@+id/vv_tutorial_ingreso_clientes"
+        android:id="@+id/vv_tutorial_distribuidor"
         android:layout_width="370dp"
         android:layout_height="470dp"
         app:layout_constraintBottom_toBottomOf="@+id/view2"
