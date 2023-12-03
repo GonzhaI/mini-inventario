@@ -4,4 +4,5 @@
     <dimen name="recycler_view_height">1dp</dimen>
     <dimen name="full_height">343dp</dimen>
     <dimen name="small_height">33dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
