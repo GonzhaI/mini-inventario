@@ -12,6 +12,8 @@ public class Distribuidor {
         this.nombreDistribuidor = nombreDistribuidor;
         this.fechaLlegada = fechaLlegada;
     }
+    public Distribuidor() {
+    }
 
     public String getId_negocio() {
         return id_negocio;

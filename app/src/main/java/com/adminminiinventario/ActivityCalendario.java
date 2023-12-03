@@ -3,6 +3,7 @@ package com.adminminiinventario;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -47,12 +48,12 @@ public class ActivityCalendario extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_calendario);
+
         nombreDistribuidor = findViewById(R.id.nombreDistribuidor);
         tv = findViewById(R.id.fecha);
         botonFechaP = findViewById(R.id.botonFecha);
         db = FirebaseFirestore.getInstance();
-
-        setContentView(R.layout.activity_calendario);
 
         String negocio = getIntent().getStringExtra("negocio");
 
@@ -150,7 +151,7 @@ public class ActivityCalendario extends AppCompatActivity {
     public void MostrarMensaje(View view) {
         if (fechaTimestamp != null) {
             // Obtener la ID del negocio
-            String idNegocio = getIntent().getStringExtra("negocio");
+            String idNegocio = getIntent().getStringExtra("negocio").toLowerCase();
 
             // Obtener el nombre del distribuidor
             String nombreDistribuidorStr = nombreDistribuidor.getText().toString().trim();
@@ -173,6 +174,12 @@ public class ActivityCalendario extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No se ha seleccionado una fecha", Toast.LENGTH_SHORT).show();
         }
+    }
+    public void Ir_a_ListaDistribuidores(View view){
+        Intent intent = new Intent(this, ActivityListaDistribuidores.class);
+
+        // Iniciar el nuevo Activity
+        startActivity(intent);
     }
 }
 
