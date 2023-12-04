@@ -209,7 +209,7 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void suscribirATopicoUsuarios(String usuario, Mqtt3AsyncClient client) {
-        String topicUsuarios = "usuarios/" + usuario;
+        String topicUsuarios = "usuarios";
 
         client.subscribeWith()
                 .topicFilter(topicUsuarios)
@@ -231,19 +231,20 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     private void publicarMensajeATopico(String usuario, Mqtt3AsyncClient client, String mensaje) {
-        String topicUsuario = "usuarios/" + usuario;
-
+        String topicUsuario = "usuarios";
+        String registro = "Ha ingresado "+ usuario;
         client.publishWith()
                 .topic(topicUsuario)
-                .payload(mensaje.getBytes())
+                .payload(registro.getBytes())
                 .send()
                 .whenComplete((publish, throwable) -> {
                     if (throwable != null) {
                         // Manejar el fallo de publicación MQTT
-                        Log.e("Fallo de publicación", throwable.getMessage());
+                        Log.v("Fallo de publicación", throwable.getMessage());
                     } else {
                         // Manejar la publicación exitosa, por ejemplo, registro o métricas
-                        Log.e("Publicación exitosa", "He ingresado en el topic! " + topicUsuario);
+                        Log.v("Publicación exitosa", "He ingresado en el topic! " + topicUsuario);
+                        Log.v("MQTT", registro);
                     }
                 });
     }
