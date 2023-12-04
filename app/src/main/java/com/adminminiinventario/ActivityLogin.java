@@ -7,6 +7,7 @@ import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +30,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 
 public class ActivityLogin extends AppCompatActivity {
     EditText passLogin, userLogin;
@@ -56,16 +59,12 @@ public class ActivityLogin extends AppCompatActivity {
                 String correo = userLogin.getText().toString().trim();
                 String contrasena = passLogin.getText().toString().trim();
 
-
                 if (correo.isEmpty() || contrasena.isEmpty()) {
                     showMessage("Por favor, completa todos los campos.");
-
                 } else {
-
                     login(correo, contrasena);
-
+                    iniciarConexionMQTT(correo);
                 }
-
             }
         });
 
@@ -73,7 +72,7 @@ public class ActivityLogin extends AppCompatActivity {
 
     private void createNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                "NEW", NotificationManager. IMPORTANCE_DEFAULT);
+                "NEW", NotificationManager.IMPORTANCE_DEFAULT);
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
         createNotification();
@@ -110,13 +109,11 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
 
-
-    private void login(String correo, String contrasena){
+    private void login(String correo, String contrasena) {
         auth.signInWithEmailAndPassword(correo, contrasena).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-
+                if (task.isSuccessful()) {
 
 
                     obtenerNegocioYContinuar();
@@ -125,7 +122,7 @@ public class ActivityLogin extends AppCompatActivity {
                     createNotification();
                     createNotificationChannel();
 
-                }else{
+                } else {
                     Toast.makeText(ActivityLogin.this, "Error al ingresar datos", Toast.LENGTH_SHORT).show();
                 }
                 if (task.getException() != null) {
@@ -143,6 +140,7 @@ public class ActivityLogin extends AppCompatActivity {
             }
         });
     }
+
     private void obtenerNegocioYContinuar() {
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
@@ -175,6 +173,81 @@ public class ActivityLogin extends AppCompatActivity {
             });
         }
     }
+
+    private void iniciarConexionMQTT(String usuario) {
+        String clusterUrl = "9655037d6bc746c999d1edcdd48fd3b1.s2.eu.hivemq.cloud";
+        int port = 8883;
+        String username = "test.test";
+        String password = "test.test1";
+        String clientId = usuario + System.currentTimeMillis();
+        Log.e("Client ID: ", clientId);
+
+        Mqtt3AsyncClient client = MqttClient.builder()
+                .useMqttVersion3()
+                .identifier(clientId)
+                .serverHost(clusterUrl)
+                .serverPort(port)
+                .useSslWithDefaultConfig()
+                .buildAsync();
+
+        client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(password.getBytes())
+                .applySimpleAuth()
+                .send()
+                .whenComplete((connAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de conexión MQTT
+                    } else {
+                        // Configurar suscripciones o iniciar la publicación
+                        suscribirATopicoUsuarios(usuario, client);
+                        publicarMensajeATopico(usuario, client, "He ingresado con exito!");
+                    }
+                });
+
+    }
+
+    private void suscribirATopicoUsuarios(String usuario, Mqtt3AsyncClient client) {
+        String topicUsuarios = "usuarios/" + usuario;
+
+        client.subscribeWith()
+                .topicFilter(topicUsuarios)
+                .callback(publish -> {
+                    // Manejar los mensajes recibidos en el tópico de usuarios
+                    byte[] payload = publish.getPayloadAsBytes();
+                    String mensajeRecibido = new String(payload);
+                    Log.e("Mensaje recibido", mensajeRecibido);
+                })
+                .send()
+                .whenComplete((subAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de suscripción MQTT
+                    } else {
+                        // Manejar la suscripción exitosa
+                    }
+                });
+    }
+
+
+    private void publicarMensajeATopico(String usuario, Mqtt3AsyncClient client, String mensaje) {
+        String topicUsuario = "usuarios/" + usuario;
+
+        client.publishWith()
+                .topic(topicUsuario)
+                .payload(mensaje.getBytes())
+                .send()
+                .whenComplete((publish, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de publicación MQTT
+                        Log.e("Fallo de publicación", throwable.getMessage());
+                    } else {
+                        // Manejar la publicación exitosa, por ejemplo, registro o métricas
+                        Log.e("Publicación exitosa", "He ingresado en el topic! " + topicUsuario);
+                    }
+                });
+    }
+
     private void showMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message)

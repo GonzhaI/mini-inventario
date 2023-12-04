@@ -17,6 +17,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        exclude("META-INF/INDEX.LIST")
+        exclude("META-INF/io.netty.versions.properties")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -68,4 +73,7 @@ dependencies {
     implementation("com.github.alcarazolabs:FastTableLayout:1.0.0")
 
     // Animaciones:
+
+    // MQTT
+    implementation ("com.hivemq:hivemq-mqtt-client:1.3.0")
 }
