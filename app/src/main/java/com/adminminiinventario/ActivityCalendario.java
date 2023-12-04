@@ -1,7 +1,5 @@
 package com.adminminiinventario;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,34 +14,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.Timestamp;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
 
 public class ActivityCalendario extends AppCompatActivity {
     TextView tv;
     Button botonFechaP;
-
     EditText nombreDistribuidor;
-
     private Timestamp fechaTimestamp;
     private FirebaseFirestore db;
-
     View pantalla_tutorial_distribuidor;
-
     private VideoView vv_tutorial_distribuidor;
+    private Mqtt3AsyncClient client; // Declarar a nivel de clase para acceder desde otros métodos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +49,9 @@ public class ActivityCalendario extends AppCompatActivity {
         botonFechaP = findViewById(R.id.botonFecha);
         db = FirebaseFirestore.getInstance();
 
-        String negocio = getIntent().getStringExtra("negocio");
+        iniciarConexionMQTT();
 
+        String negocio = getIntent().getStringExtra("negocio");
 
         pantalla_tutorial_distribuidor = findViewById(R.id.pantalla_tutorial_distribuidor);
         ImageView btnTutorial = findViewById(R.id.btn_tutorial_distribuidor);
@@ -130,23 +125,23 @@ public class ActivityCalendario extends AppCompatActivity {
         });
     }
 
-        public void abrirCalendario (View view){
-            Calendar cal = Calendar.getInstance();
-            int anio = cal.get(Calendar.YEAR);
-            int mes = cal.get(Calendar.MONTH);
-            int dia = cal.get(Calendar.DAY_OF_MONTH);
+    public void abrirCalendario(View view) {
+        Calendar cal = Calendar.getInstance();
+        int anio = cal.get(Calendar.YEAR);
+        int mes = cal.get(Calendar.MONTH);
+        int dia = cal.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog dpd = new DatePickerDialog(ActivityCalendario.this, (datePicker, year, month, dayOfMonth) -> {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                fechaTimestamp = new Timestamp(calendar.getTime());
+        DatePickerDialog dpd = new DatePickerDialog(ActivityCalendario.this, (datePicker, year, month, dayOfMonth) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            fechaTimestamp = new Timestamp(calendar.getTime());
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                String fechaFormateada = sdf.format(calendar.getTime());
-                tv.setText(fechaFormateada);
-            }, anio, mes, dia);
-            dpd.show();
-        }
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String fechaFormateada = sdf.format(calendar.getTime());
+            tv.setText(fechaFormateada);
+        }, anio, mes, dia);
+        dpd.show();
+    }
 
     public void MostrarMensaje(View view) {
         if (fechaTimestamp != null) {
@@ -169,22 +164,67 @@ public class ActivityCalendario extends AppCompatActivity {
                     .add(distribuidor)
                     .addOnSuccessListener(documentReference -> {
                         Toast.makeText(ActivityCalendario.this, "Distribuidor agregado con éxito", Toast.LENGTH_SHORT).show();
+
+                        // Enviar mensaje MQTT al tópico
+                        enviarMensajeMQTT(nombreDistribuidorStr);
                     })
                     .addOnFailureListener(e -> Toast.makeText(ActivityCalendario.this, "Error al agregar el distribuidor: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(this, "No se ha seleccionado una fecha", Toast.LENGTH_SHORT).show();
         }
     }
-    public void Ir_a_ListaDistribuidores(View view){
+
+    private void iniciarConexionMQTT() {
+        String clusterUrl = "9655037d6bc746c999d1edcdd48fd3b1.s2.eu.hivemq.cloud";
+        int port = 8883;
+        String username = "test.test";
+        String password = "test.test1";
+
+        client = MqttClient.builder()
+                .useMqttVersion3()
+                .identifier("ClienteCalendario" + System.currentTimeMillis())
+                .serverHost(clusterUrl)
+                .serverPort(port)
+                .useSslWithDefaultConfig()
+                .buildAsync();
+
+        client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(password.getBytes())
+                .applySimpleAuth()
+                .send()
+                .whenComplete((connAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de conexión MQTT
+                    } else {
+                        // Conexión MQTT exitosa
+                    }
+                });
+    }
+
+    private void enviarMensajeMQTT(String nombreDistribuidor) {
+        String topic = "distribuidores";
+
+        String mensaje = "Nuevo distribuidor: " + nombreDistribuidor;
+
+        client.publishWith()
+                .topic(topic)
+                .payload(mensaje.getBytes())
+                .send()
+                .whenComplete((publish, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de publicación MQTT
+                    } else {
+                        // Publicación MQTT exitosa
+                    }
+                });
+    }
+
+    public void Ir_a_ListaDistribuidores(View view) {
         Intent intent = new Intent(this, ActivityListaDistribuidores.class);
 
         // Iniciar el nuevo Activity
         startActivity(intent);
     }
 }
-
-
-
-
-
-
