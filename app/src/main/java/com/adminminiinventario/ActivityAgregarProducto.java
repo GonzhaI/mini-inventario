@@ -65,6 +65,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -243,14 +245,12 @@ public class ActivityAgregarProducto extends AppCompatActivity {
     }
 
     private void agregarProductoAFirebase() {
-        // Obtener los valores de los campos
         String producto = nombreProducto.getText().toString().trim();
         String cdBarras = cdBarrasProducto.getText().toString().trim();
         String cantidadStr = cantidadProducto.getText().toString().trim();
         String valorStr = valorProducto.getText().toString().trim();
-        String idNegocio = getIntent().getStringExtra("negocio"); // Obtener el id_negocio
+        String idNegocio = getIntent().getStringExtra("negocio");
 
-        // Validación de campos vacíos
         if (producto.isEmpty() || cdBarras.isEmpty() || cantidadStr.isEmpty() || valorStr.isEmpty()) {
             showMessage("Por favor, completa todos los campos.");
         } else {
@@ -260,10 +260,8 @@ public class ActivityAgregarProducto extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             if (imageBitmap != null) {
-                // Si imageBitmap no es nulo, lo comprimimos
                 imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             } else {
-                // Si imageBitmap es nulo, obtenemos la imagen predeterminada y la comprimimos
                 Bitmap imagenPredeterminada = obtenerImagenPredeterminada();
                 imagenPredeterminada.compress(Bitmap.CompressFormat.PNG, 100, baos);
             }
@@ -280,7 +278,6 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                     String imageUrl = uri.toString();
 
                     Map<String, Object> datos = new HashMap<>();
-                    // Agregar los datos del producto al Map
                     datos.put("id_negocio", idNegocio);
                     datos.put("producto", producto);
                     datos.put("cdBarras", cdBarras);
@@ -292,11 +289,13 @@ public class ActivityAgregarProducto extends AppCompatActivity {
                         datos.put("fechaVencimiento", fechaVencimiento);
                     }
 
-                    // Guardar en Firebase
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("productos")
                             .add(datos)
-                            .addOnSuccessListener(documentReference -> showMessage("Producto agregado con éxito."))
+                            .addOnSuccessListener(documentReference -> {
+                                showMessage("Producto agregado con éxito.");
+                                enviarMensajeMQTT(producto); // Enviar mensaje MQTT
+                            })
                             .addOnFailureListener(e -> showMessage("Error al agregar el producto: " + e.getMessage()));
                 });
             });
@@ -339,5 +338,48 @@ public class ActivityAgregarProducto extends AppCompatActivity {
         dialog.show();
     }
 
+    private void enviarMensajeMQTT(String nombreProducto) {
+        String clusterUrl = "9655037d6bc746c999d1edcdd48fd3b1.s2.eu.hivemq.cloud";
+        int port = 8883;
+        String username = "test.test";
+        String password = "test.test1";
 
+        Mqtt3AsyncClient client = MqttClient.builder()
+                .useMqttVersion3()
+                .identifier("ClienteProductos" + System.currentTimeMillis())
+                .serverHost(clusterUrl)
+                .serverPort(port)
+                .useSslWithDefaultConfig()
+                .buildAsync();
+
+        client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(password.getBytes())
+                .applySimpleAuth()
+                .send()
+                .whenComplete((connAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de conexión MQTT
+                    } else {
+                        // Conexión MQTT exitosa
+                        String topic = "productos";
+                        String mensaje = "Nuevo producto: " + nombreProducto;
+
+                        client.publishWith()
+                                .topic(topic)
+                                .payload(mensaje.getBytes())
+                                .send()
+                                .whenComplete((publish, throwable1) -> {
+                                    if (throwable1 != null) {
+                                        // Manejar el fallo de publicación MQTT
+                                    } else {
+                                        // Publicación MQTT exitosa
+                                    }
+                                });
+                    }
+                });
+    }
 }
+
+
