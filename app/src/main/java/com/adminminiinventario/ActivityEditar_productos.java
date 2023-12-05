@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 import com.squareup.picasso.Picasso;
 
 
@@ -193,14 +195,6 @@ public class ActivityEditar_productos extends AppCompatActivity {
         Log.d("ActualizarProducto", "ID Negocio: " + idNegocio);
         Log.d("ActualizarProducto", "Código de Barras a actualizar: " + nuevoCodigoBarras);
 
-        // Crea un Map con los nuevos datos
-        Map<String, Object> nuevosDatos = new HashMap<>();
-        nuevosDatos.put("producto", nuevoNombre);
-        nuevosDatos.put("cdBarras", nuevoCodigoBarras);
-        nuevosDatos.put("cantidad", nuevaCantidad);
-        nuevosDatos.put("valor", nuevoValor);
-        nuevosDatos.put("fechaVencimiento", nuevaFechaVencimiento);
-
         // Accede a la instancia de FirebaseFirestore y actualiza el primer documento encontrado
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("productos")
@@ -213,6 +207,17 @@ public class ActivityEditar_productos extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         Log.d("ActualizarProducto", "ID Documento: " + document.getId());
 
+                        // Obtiene el nombre del producto antes de la actualización
+                        String nombreAnterior = document.getString("producto");
+
+                        // Crea un Map con los nuevos datos
+                        Map<String, Object> nuevosDatos = new HashMap<>();
+                        nuevosDatos.put("producto", nuevoNombre);
+                        nuevosDatos.put("cdBarras", nuevoCodigoBarras);
+                        nuevosDatos.put("cantidad", nuevaCantidad);
+                        nuevosDatos.put("valor", nuevoValor);
+                        nuevosDatos.put("fechaVencimiento", nuevaFechaVencimiento);
+
                         // Actualiza el documento con los nuevos datos
                         db.collection("productos").document(document.getId())
                                 .update(nuevosDatos)
@@ -220,6 +225,9 @@ public class ActivityEditar_productos extends AppCompatActivity {
                                     // Éxito al actualizar
                                     // Puedes mostrar un mensaje o realizar otras acciones si es necesario
                                     showMessage("Producto actualizado con éxito");
+
+                                    // Después de actualizar el producto, envía un mensaje MQTT
+                                    enviarMensajeMQTTClienteEditado(nombreAnterior, nuevoNombre);
                                 })
                                 .addOnFailureListener(e -> {
                                     // Error al actualizar
@@ -228,6 +236,50 @@ public class ActivityEditar_productos extends AppCompatActivity {
                                 });
                     } else {
                         showMessage("Error al obtener el producto a actualizar: " + task.getException());
+                    }
+                });
+    }
+
+    // Función para enviar un mensaje MQTT al tópico "clientes" cuando se edita un producto
+    private void enviarMensajeMQTTClienteEditado(String nombreProductoAnterior, String nombreProductoNuevo) {
+        String clusterUrl = "9655037d6bc746c999d1edcdd48fd3b1.s2.eu.hivemq.cloud";
+        int port = 8883;
+        String username = "test.test";
+        String password = "test.test1";
+
+        Mqtt3AsyncClient client = MqttClient.builder()
+                .useMqttVersion3()
+                .identifier("ClienteEditado" + System.currentTimeMillis())
+                .serverHost(clusterUrl)
+                .serverPort(port)
+                .useSslWithDefaultConfig()
+                .buildAsync();
+
+        client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(password.getBytes())
+                .applySimpleAuth()
+                .send()
+                .whenComplete((connAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de conexión MQTT
+                    } else {
+                        // Conexión MQTT exitosa
+                        String topic = "productosEditados";
+                        String mensaje = "Producto editado: " + nombreProductoAnterior + " a " + nombreProductoNuevo;
+
+                        client.publishWith()
+                                .topic(topic)
+                                .payload(mensaje.getBytes())
+                                .send()
+                                .whenComplete((publish, throwable1) -> {
+                                    if (throwable1 != null) {
+                                        // Manejar el fallo de publicación MQTT
+                                    } else {
+                                        // Publicación MQTT exitosa
+                                    }
+                                });
                     }
                 });
     }
