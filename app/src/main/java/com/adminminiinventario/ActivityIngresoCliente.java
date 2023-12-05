@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 
 public class ActivityIngresoCliente extends AppCompatActivity {
 
@@ -109,27 +111,6 @@ public class ActivityIngresoCliente extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         editTextNombre = findViewById(R.id.editTextNombre);
         checkBoxDeudor = findViewById(R.id.checkBoxDeudor);
         editTextDiasRestantes = findViewById(R.id.editTextDiasRestantes);
@@ -160,6 +141,9 @@ public class ActivityIngresoCliente extends AppCompatActivity {
                                     DocumentReference documentReference = task.getResult();
                                     String clienteKey = documentReference.getId();
 
+                                    // Enviar mensaje MQTT al tópico "clientes"
+                                    enviarMensajeMQTTClienteAgregado(nombre);
+
                                     // Devolver los datos a ActivityGestorCompradores
                                     Intent data = new Intent();
                                     data.putExtra("nombre", nombre);
@@ -183,5 +167,47 @@ public class ActivityIngresoCliente extends AppCompatActivity {
                         });
             }
         });
+    }
+    private void enviarMensajeMQTTClienteAgregado(String nombreCliente) {
+        String clusterUrl = "9655037d6bc746c999d1edcdd48fd3b1.s2.eu.hivemq.cloud";
+        int port = 8883;
+        String username = "test.test";
+        String password = "test.test1";
+
+        Mqtt3AsyncClient client = MqttClient.builder()
+                .useMqttVersion3()
+                .identifier("ClienteRegistro" + System.currentTimeMillis())
+                .serverHost(clusterUrl)
+                .serverPort(port)
+                .useSslWithDefaultConfig()
+                .buildAsync();
+
+        client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(password.getBytes())
+                .applySimpleAuth()
+                .send()
+                .whenComplete((connAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de conexión MQTT
+                    } else {
+                        // Conexión MQTT exitosa
+                        String topic = "clientes";
+                        String mensaje = "Nuevo cliente agregado: " + nombreCliente;
+
+                        client.publishWith()
+                                .topic(topic)
+                                .payload(mensaje.getBytes())
+                                .send()
+                                .whenComplete((publish, throwable1) -> {
+                                    if (throwable1 != null) {
+                                        // Manejar el fallo de publicación MQTT
+                                    } else {
+                                        // Publicación MQTT exitosa
+                                    }
+                                });
+                    }
+                });
     }
 }
