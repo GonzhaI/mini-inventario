@@ -1,18 +1,20 @@
 package com.adminminiinventario;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import androidx.appcompat.app.AlertDialog;
-
-import androidx.annotation.NonNull;
-
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,13 +22,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.hivemq.client.mqtt.MqttClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ActivityRegistrarse extends AppCompatActivity {
 
@@ -86,14 +86,14 @@ public class ActivityRegistrarse extends AppCompatActivity {
                 } else {
 
 
-                                String nombreUsuario = usuarioEditText.getText().toString().trim();
-                                String nombreNeogocio = nombre_negocioNameEditText.getText().toString().trim();
-                                String correo = correoEditText.getText().toString().trim();
-                                String contrasena = contrasenaEditText.getText().toString().trim();
-                                findUser(nombreUsuario, nombreNeogocio, correo, contrasena);
+                    String nombreUsuario = usuarioEditText.getText().toString().trim();
+                    String nombreNeogocio = nombre_negocioNameEditText.getText().toString().trim();
+                    String correo = correoEditText.getText().toString().trim();
+                    String contrasena = contrasenaEditText.getText().toString().trim();
+                    findUser(nombreUsuario, nombreNeogocio, correo, contrasena);
 
 
-                    }
+                }
 
 
 
@@ -175,12 +175,14 @@ public class ActivityRegistrarse extends AppCompatActivity {
                 map.put("negocio", nombreNegocio);
                 map.put("correo",correo);
 
+
                 db.collection("usuario").document(id).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
 
                         obtenerNegocioYContinuar();
                         Toast.makeText(ActivityRegistrarse.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
+                        enviarMensajeMQTTClienteRegistrado(nombreUsuario);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -228,6 +230,48 @@ public class ActivityRegistrarse extends AppCompatActivity {
             });
         }
     }
+    private void enviarMensajeMQTTClienteRegistrado(String nombreCliente) {
+        String clusterUrl = "d886a1b7a6d14b908fca147921459eec.s2.eu.hivemq.cloud";
+        int port = 8883;
+        String username = "Alexis";
+        String password = "Alexis@123";
 
+        Mqtt3AsyncClient client = MqttClient.builder()
+                .useMqttVersion3()
+                .identifier("ClienteNuevo" + System.currentTimeMillis())
+                .serverHost(clusterUrl)
+                .serverPort(port)
+                .useSslWithDefaultConfig()
+                .buildAsync();
+
+        client.connectWith()
+                .simpleAuth()
+                .username(username)
+                .password(password.getBytes())
+                .applySimpleAuth()
+                .send()
+                .whenComplete((connAck, throwable) -> {
+                    if (throwable != null) {
+                        // Manejar el fallo de conexión MQTT
+                    } else {
+                        // Conexión MQTT exitosa
+                        String topic = "Cliente";
+                        String mensaje = "Nuevo Cliente: " + nombreCliente;
+
+                        client.publishWith()
+                                .topic(topic)
+                                .payload(mensaje.getBytes())
+                                .send()
+                                .whenComplete((publish, throwable1) -> {
+                                    if (throwable1 != null) {
+                                        // Manejar el fallo de publicación MQTT
+                                    } else {
+                                        // Publicación MQTT exitosa
+                                        Log.e("MQTT","Se conecto");
+                                    }
+                                });
+                    }
+                });
+    }
 
 }
