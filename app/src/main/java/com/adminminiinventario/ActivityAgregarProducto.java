@@ -249,7 +249,7 @@ public class ActivityAgregarProducto extends AppCompatActivity {
         String cdBarras = cdBarrasProducto.getText().toString().trim();
         String cantidadStr = cantidadProducto.getText().toString().trim();
         String valorStr = valorProducto.getText().toString().trim();
-        String idNegocio = getIntent().getStringExtra("negocio");
+        String idNegocio = getIntent().getStringExtra("negocio").toLowerCase(Locale.ROOT);
 
         if (producto.isEmpty() || cdBarras.isEmpty() || cantidadStr.isEmpty() || valorStr.isEmpty()) {
             showMessage("Por favor, completa todos los campos.");
