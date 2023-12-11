@@ -63,7 +63,6 @@ public class ActivityLogin extends AppCompatActivity {
                     showMessage("Por favor, completa todos los campos.");
                 } else {
                     login(correo, contrasena);
-                    iniciarConexionMQTT(correo);
                 }
             }
         });
@@ -114,10 +113,12 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
-
+                    // Usuario ha iniciado sesión correctamente
                     obtenerNegocioYContinuar();
                     Toast.makeText(ActivityLogin.this, "Bienvenido", Toast.LENGTH_SHORT).show();
+
+                    // Agregar la lógica de conexión MQTT y publicación aquí
+                    iniciarConexionMQTT(correo);
 
                     createNotification();
                     createNotificationChannel();
@@ -131,7 +132,6 @@ public class ActivityLogin extends AppCompatActivity {
                     errorMessage = exception.getMessage(); // Obtener el mensaje de error específico
                     showMessage(errorMessage);
                 }
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
